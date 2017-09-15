@@ -1,11 +1,12 @@
-# Project Name
+# Speciation Diagram Generator
 
-Developer Name:
+Developer Name: Steven Palmer
 
-This project is a reimplementation of ...
+This project is a reimplementation of "Solution of simultaneous chemical equilibria in heterogeneous systems:
+implementation in Matlab" by D. Scott Smith
 
 The folders and files for this project are as follows:
 
 Doc - Documentation for the project
-Code - Implementation
-…
+ReferenceMaterial - Project references and supplementary information
+src - Implementation
