@@ -16,8 +16,15 @@
 \usepackage{caption}
 \usepackage{pdflscape}
 \usepackage{afterpage}
-
+\usepackage{tabu}
+\usepackage{verbatim}
 \usepackage[round]{natbib}
+\usepackage{url}
+
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{.7}}
+\newcommand*\bigcdot@[2]{\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
 
 %\usepackage{refcheck}
 
@@ -31,6 +38,8 @@
 }
 
 \input{../Comments}
+
+\newcommand{\sskip}{\vskip 1mm}
 
 % For easy change of table widths
 \newcommand{\colZwidth}{1.0\textwidth}
@@ -71,32 +80,41 @@
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
+\newcommand{\sref}[1]{\S~\ref{#1}}
 
-\newcommand{\progname}{ProgName} % PUT YOUR PROGRAM NAME HERE
+\newcommand{\progname}{SpecGen} % PUT YOUR PROGRAM NAME HERE
 
 \usepackage{fullpage}
 
 \begin{document}
+\pagenumbering{gobble}
 
-\title{Project Title} 
-\author{Author Name}
+\title{CAS 741: SRS\\[10pt]\Large Aqueous Speciation Diagram Generator}
+\author{Steven Palmer\\\texttt{palmes4}}
 \date{\today}
 	
 \maketitle
 
-\pagenumbering{roman}
-\tableofcontents
+~\newpage
 
-\begin{table}[bp]
-\caption{\bf Revision History}
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\pagenumbering{roman}
+
+\setcounter{secnumdepth}{0}
+
+\section{Revision History}
+
+\begin{table}[hp]
+\caption{Revision History} \label{TblRevisionHistory}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+10.5.2017 & S. Palmer & First revision of document\\
 \bottomrule
 \end{tabularx}
 \end{table}
+
+~\newpage
 
 \section{Reference Material}
 
@@ -117,39 +135,59 @@ description of the unit and the SI name.
     \textbf{symbol} & \textbf{unit} & \textbf{SI}\\
     \midrule 
     \si{\metre} & length & metre\\
-    \si{\kilogram} & mass	& kilogram\\
+    \si{\kilogram} & mass & kilogram\\
     \si{\second} & time & second\\
     \si{\celsius} & temperature & centigrade\\
-    \si{\joule} & energy & Joule\\
-    \si{\watt} & power & Watt (W = \si{\joule\per\second})\\
+    \si{\mole} & amount of substance & mole\\
+    \si{\litre} & volume & litre ($\si{\litre} = 10^{-3}\cdot\si{\cubic\metre}$)\\
+    \si{\pascal} & pressure & pascal ($\si{\pascal} = \si{\kilogram\per\metre\per\square\second}$)\\
+    \si{\bar} & pressure & bar ($\si{\bar} = 10^{5}\cdot\si{\pascal}$)\\
     \bottomrule
   \end{tabular}
   %	\caption{Provide a caption}
 %\end{table}
 
-\wss{Only include the units that your SRS actually uses}
-
 \subsection{Table of Symbols}
 
 The table that follows summarizes the symbols used in this document along with
-their units.  The choice of symbols was made to be consistent with the heat
-transfer literature and with existing documentation for solar water heating
-systems.  The symbols are listed in alphabetical order.
+their units.  The choice of symbols was made to be consistent with chemistry literature.  The symbols are listed in alphabetical order.
 
 \renewcommand{\arraystretch}{1.2}
 %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
 \noindent \begin{longtable*}{l l p{12cm}} \toprule
 \textbf{symbol} & \textbf{unit} & \textbf{description}\\
 \midrule 
-$A_C$ & \si[per-mode=symbol] {\square\metre} & coil surface area
+$A$ & -- & reactant species in a chemical equation
 \\
-$A_\text{in}$ & \si[per-mode=symbol] {\square\metre} & surface area over 
-which heat is transferred in
+$B$ & -- & product species in a chemical equation
 \\ 
+$K$ & -- & equilibrium constant
+\\ 
+$p$ & -- & the total number of user supplied chemical equilibrium reactions
+\\ 
+$\overline {RK}_{in}$ & -- & the input set of all pairs of reactions and associated equilibrium constants 
+\\ 
+$\overline S$ & -- & a set of aqueous solute species in a chemical system
+\\ 
+$\overline S_{in}$ & -- & the input set of all aqueous solute species in the chemical system
+\\ 
+$\overline T_{in}$ & -- & the input set of total concentrations of chemical elements
+\\ 
+$X$ & -- & arbitrary chemical species
+\\
+$x$ & -- & arbitrary chemical element
+\\
+$x_{tot}$ & \si[per-mode=symbol] {\mole\per\litre} & total concentration of an arbitrary chemical element $x$
+\\
+$[X]$ & \si[per-mode=symbol] {\mole\per\litre} & concentration of the arbitrary chemical species $X$
+\\
+$\{X\}$ & -- & activity of the arbitrary chemical species $X$
+\\
+$z_{X}$ & -- & charge number of an arbitrary aqueous solute $X$
+\\
 \bottomrule
 \end{longtable*}
-\wss{Use your problems actual symbols.  The si package is a good idea to use for
-  units.}
+
 
 \subsection{Abbreviations and Acronyms}
 
@@ -166,139 +204,119 @@ which heat is transferred in
   LC & Likely Change\\
   PS & Physical System Description\\
   R & Requirement\\
+  SATP & Standard Ambient Temperature and Pressure\\
   SRS & Software Requirements Specification\\
-  \progname{} & \wss{put your program name here}\\
+  \progname{} & The Aqueous Speciation Diagram Generator program\\
   T & Theoretical Model\\
   \bottomrule
 \end{tabular}\\
 
-\wss{Add any other abbreviations or acronyms that you add}
-
 \newpage
+
+\tableofcontents
+
+~\newpage
+
 \pagenumbering{arabic}
+
+\setcounter{secnumdepth}{3}
 
 \section{Introduction}
 
-\wss{This SRS template is based on \citet{SmithAndLai2005, SmithEtAl2007}.  It
-  will get you started, but you will have to make changes.  Any changes to
-  section headings should be approved by the instructor, since that implies a
-  deviation from the template.  Although the bits shown below do not include
-  type information, you may need to add this information for your problem.}
-
-\wss{Feel free to change the appearance of the report by modifying the LaTeX
-  commands.}
-
-\wss{If you are documenting a family of models, you can start from this same
-  template, but you will have to add a section for variabilities.  For program
-  families you should look at \cite{Smith2006, SmithMcCutchanAndCarette2017}.
-  You should be able to do one document that captures the commonality analysis
-  and the requirements.}
-
 \subsection{Purpose of Document}
+The purpose of this document is to describe the requirements for the Aqueous Speciation Diagram Generator program (herein referred to as \progname), a software product that will produce a speciation diagram given a set of chemical reactions and element totals that define a chemical system as inputs.  The goals and theoretical models used in the SpecGen code are provided, with an emphasis on explicitly identifying assumptions and unambiguous definitions. This document is intended to be used as a reference to provide all information necessary to understand and verify the transformation of inputs to outputs. The SRS is abstract: the contents describe the problem being solved, but not how to solve it.
+
+This document will be used as a starting point for subsequent development phases, including writing the design specification and the software verification and validation plan. The design document will show how the requirements are to be realized, including decisions on the numerical algorithms and programming environment. The verification and validation plan will show the steps that will be used to increase confidence in the software documentation and the implementation. Although the SRS fits in a series of documents that follow the so-called waterfall model, the actual development process is not constrained in any way. Even when the waterfall model is not followed, as Parnas and Clements point out, the most logical way to present the documentation is still to "fake" a rational design process.
 
 \subsection{Scope of Requirements} 
+The scope of the requirements includes collecting all input parameters that describe a chemical system. Given the appropriate inputs, the code for SpecGen is intended to use the data to produce a speciation diagram in the pH range 0 to 14. 
 
 \subsection{Characteristics of Intended Reader} 
+Reviewers of this documentation should have an understanding of first year undergraduate physical chemistry.  Knowledge about chemical activity is assumed.
+
 
 \subsection{Organization of Document}
+The organization of this document follows the template for an SRS for scientific computing software proposed by [1] and [2] (in Sec:Refe), with some aspects taken from [3]. The presentation follows the standard pattern of presenting goals, theories, definitions, and assumptions. For readers that would like a more bottom up approach, they can start reading the data definitions in Sec:DataDefi and trace back to find any additional information they require.
+
+The goal statements are refined to the theoretical models, and the theoretical models to the instance models. The data definitions are used to support the definitions of the different models.
 
 \section{General System Description}
-
 This section identifies the interfaces between the system and its environment,
 describes the user characteristics and lists the system constraints.
 
 \subsection{System Context}
 
-\wss{Your system context will likely include an explicit list of user and system
-  responsibilities}
-
 \begin{itemize}
 \item User Responsibilities:
 \begin{itemize}
-\item 
+\item Ensure that the input data is correct.
+\item Ensure that the input data is sufficient to specify a chemical system that has a unique speciation solution.
 \end{itemize}
 \item \progname{} Responsibilities:
 \begin{itemize}
 \item Detect data type mismatch, such as a string of characters instead of a
-  floating point number
-\item 
+  floating point number.
+\item Determine if the inputs satisfy the required physical and software constraints.
+\item Solve the system of equations arising from the input data to generate the output data.
+\item Generate a plot of the output data.
 \end{itemize}
 \end{itemize}
 
 \subsection{User Characteristics} \label{SecUserCharacteristics}
-
-The end user of \progname{} should have an understanding of undergraduate Level
-1 Calculus and Physics.
+The end user of \progname{} should have an understanding of first year undergraduate physical chemistry.
 
 \subsection{System Constraints}
-
-\wss{You may not have any system constraints}
+There are no system constraints.
 
 \section{Specific System Description}
 
 This section first presents the problem description, which gives a high-level
 view of the problem to be solved.  This is followed by the solution characteristics
 specification, which presents the assumptions, theories, definitions and finally
-the instance models.  \wss{Add any project specific details that are relevant
-  for the section overview.}
+the instance models.
 
 \subsection{Problem Description} \label{Sec_pd}
+Chemical speciation refers to the stable (equilibrium) distribution of chemical species in a given chemical system.   Speciation diagrams, which plot species concentrations against an independently varied parameter of the system, are useful tools for displaying speciation data in a concise and easy to use format.  The production of speciation diagrams requires solving a set of non-linear equations which arise from the chemical reactions of the species present in a chemical system.  As the number of reactions taking place in a system increases, producing speciation diagrams can quickly become a tedious undertaking when done manually.
 
-\progname{} is \wss{what problem does your program solve?}
+\progname{} will produce a speciation diagram given a set of chemical reactions, equilibrium constants, and element totals that define a chemical system.  \progname{} will be specific to speciation of ions in aqueous systems under varying pH, which is of particular importance in the fields of aqueous process engineering and hydrometallurgy.  The diagram generated by \progname{} will plot speciation of all aqueous species (excluding H$^+$ and OH$^-$) across the pH range 0 to 14.
 
-\subsubsection{Terminology and  Definitions}
+\subsubsection{Terminology and Definitions}
 
 This subsection provides a list of terms that are used in the subsequent
 sections and their meaning, with the purpose of reducing ambiguity and making it
 easier to correctly understand the requirements:
 
-\begin{itemize}
-
-\item 
-
-\end{itemize}
+\begin{description}
+\item[Activity:] the ``effective concentration'' of a species in a chemical system
+\item[Equilibrium:] the state of a chemical system in which species concentrations are stable
+\item[SATP:] standard ambient temperature pressure $(T = 25^{\circ}\textrm{C}, ~P = 1~\textrm{bar})$
+\end{description}
 
 \subsubsection{Physical System Description}
 
-The physical system of \progname{}, as shown in Figure~?,
-includes the following elements:
+The physical system of \progname{} includes the following elements:
 
 \begin{itemize}
 
-\item[PS1:] 
-
-\item[PS2:] ...
+\item[PS1:] An unspecified volume of liquid water containing dissolved chemical species under equilibrium conditions.
 
 \end{itemize}
 
-\wss{A figure here may make sense for most SRS documents}
-
-% \begin{figure}[h!]
-% \begin{center}
-% %\rotatebox{-90}
-% {
-%  \includegraphics[width=0.5\textwidth]{<FigureName>}
-% }
-% \caption{\label{<Label>} <Caption>}
-% \end{center}
-% \end{figure}
 
 \subsubsection{Goal Statements}
 
-\noindent Given the \wss{inputs}, the goal statements are:
+\noindent Given a set of chemical species present in an aqueous chemical system, a set of reversible reactions and associated equilibrium constants that the species are subject to, and the total concentrations of all elements present in the species set (excluding O and H), the goal statements are:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_meaningfulLabel}:] \wss{One
-    sentence description of the goal.  There may be more than one.  Each Goal
-    should have a meaningful label.}
-
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_solve}:] Calculate the equilibrium concentrations of all chemical species present in the system over the pH range 0 to 14.
+\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_plot}:] Generate a plot of the equilibrium concentrations of all chemical species present in the system versus pH.
 \end{itemize}
 
 \subsection{Solution Characteristics Specification}
 
 The instance models that govern \progname{} are presented in
-Subsection~\ref{sec_instance}.  The information to understand the meaning of the
+\sref{sec_instance}.  The information to understand the meaning of the
 instance models and their derivation is also presented, so that the instance
 models can be verified.
 
@@ -312,54 +330,250 @@ likely change [LC], in which the respective assumption is used.
 
 \begin{itemize}
 
-\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_meaningfulLabel}:]
-  \wss{Short description of each assumption.  Each assumption
-    should have a meaningful label.  Use cross-references to identify the
-    appropriate traceability to T, GD, DD etc., using commands like dref, ddref etc.}
-
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_SATP}:]
+  All generated speciation diagrams are at SATP conditions.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_K_SATP}:]
+  In accordance with \aref{A_SATP}, all user supplied equilibrium constants are assumed to be values measured under SATP conditions.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_only_wat}:]
+  The chemical system is assumed be a single-solvent solution, where the solvent is liquid water at SATP.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_only_aq}:]
+  The chemical species in all of the user supplied equations are assumed to be aqueous solutes.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_act_wat}:]
+  The activity of liquid water is assumed to be 1.0.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_act_aq}:]
+  The activities of all aqueous solute species are assumed to be equal to their concentration.
+\item[A\refstepcounter{assumpnum}\theassumpnum \label{A_rev}:]
+  All chemical equations supplied by the user are assumed to be reversible (finite equilibrium constant).
 \end{itemize}
 
 \subsubsection{Theoretical Models}\label{sec_theoretical}
 
 This section focuses on the general equations and laws that \progname{} is based
-on.  \wss{Modify the examples below for your problem, and add additional models
-  as appropriate.}
+on.
 
 ~\newline
 
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
   \hline
   \rowcolor[gray]{0.9}
-  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_COE}\\
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_RREQ}\\
   \hline
-  Label&\bf Conservation of thermal energy\\
+  Label&\bf Equational representation of reversible chemical reactions\\
   \hline
-  Equation&  $-{\bf \nabla \cdot q} + g$ = $\rho C \frac{\partial T}{\partial t}$\\
+  Equation&  ${\alpha}_1 {A}_{1} + \cdots + {\alpha}_n {A}_{n} \rightleftharpoons {\beta}_1 {B}_{1} + \cdots + {\beta}_m {B}_{m}$\\
   \hline
   Description & 
-                The above equation gives the conservation of energy for transient heat transfer in a material
-                of specific heat capacity $C$ (\si{\joule\per\kilogram\per\celsius}) and density $\rho$ 
-                (\si{\kilogram\per\cubic\metre}), where $\bf q$ is the thermal flux vector (\si{\watt\per\square\metre}),
-                $g$ is the volumetric heat generation
-                (\si{\watt\per\cubic\metre}), $T$ is the temperature
-                (\si{\celsius}),  $t$ is time (\si{\second}), and $\nabla$ is
-                the gradient operator.  For this equation to apply, other forms
-                of energy, such as mechanical energy, are assumed to be negligible in the
-                system (\aref{A_OnlyThermalEnergy}).  In general, the material properties ($\rho$ and $C$) depend on temperature.\\
+                The above equation represents a reversible chemical reaction where:\\
+              & $n$ is the number of reactants\\
+              & $m$ is the number of products\\
+              & $A_i$ is the $i^{\textrm{th}}$ reactant species\\
+              & $\alpha_i$ is the stoichiometric coefficient of the $i^{\textrm{th}}$ reactant\\
+              & $B_j$ is the $j^{\textrm{th}}$ product species\\
+              & $\beta_j$ is the stoichiometric coefficient of the $j^{\textrm{th}}$ product\\
   \hline
-  Source &
-           \url{http://www.efunda.com/formulae/heat_transfer/conduction/overview_cond.cfm}\\
-  % The above web link should be replaced with a proper citation to a publication
+  Source &~\cite{wiki:rr}\\
   \hline
   Ref.\ By & \dref{ROCT}\\
   \hline
-\end{tabular}
+\end{tabu}
+\end{minipage}\\
+~\newline
+~\newline
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_MB}\\
+  \hline
+  Label&\bf Conservation of mass (concentration balance)\\
+  \hline
+  Equation&  $x_{tot} = \sum\{X : S ~|~ x \in X ~\bigcdot~ \#x\langle X\rangle \cdot [X]\}$\\
+  \hline
+  Description & 
+                The total dissolved concentration of an element in an aqueous solution is equal to the sum of the concentrations of all species which contain that element.  This is captured in the above equation, where:\\
+              & $x$ is a chemical element\\
+              & $x_{tot}$ is the total dissolved concentration of $x$ in a solution\\
+              & $X$ is an aqueous species in solution\\
+              & $S$ is a set of all aqueous species in a solution\\
+              & $\#x\langle S\rangle$ is the number of occurrences of $x$ in $X$\\
+              & $[X]$ is the concentration of $X$ in solution\\
+  \hline
+  Source &\\
+  \hline
+  Ref.\ By & \dref{ROCT}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
+~\newline
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+  \hline
+  \rowcolor[gray]{0.9}
+  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_CB}\\
+  \hline
+  Label&\bf Charge neutrality of aqueous solutions\\
+  \hline
+  Equation&  $\sum\{X : S ~\bigcdot~ z_{X} \cdot [X]\} = 0$\\
+  \hline
+  Description & 
+                Aqueous solutions must be electrically neutral, and thus the concentration of positive charge from dissolved solutes must balance with the concentration of negative charge from dissolved solutes.  This is reflected in the equation above, where:\\
+              & $X$ is an aqueous species in solution\\
+              & $S$ is a set of all aqueous species a solution\\
+              & $z_{X}$ is the charge number of $X$\\
+              & $[X]$ is the concentration of $X$\\
+  \hline
+  Source &\\
+  \hline
+  Ref.\ By & \dref{ROCT}\\
+  \hline
+\end{tabu}
 \end{minipage}\\
 
 ~\newline
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& T\refstepcounter{theorynum}\thetheorynum \label{T_LMAF}\\
+\hline
+Label &\bf Law of mass action (forward) \\
+\hline
+Equation&$ r_+ = k_+ \displaystyle\prod_{i=1}^{n} \{A_i\}^{\alpha_i} $  \\
+\hline
+Description &
+The law of mass action describes the forward and backward reaction rates for a chemical reaction.  For a chemical reaction expressed in the equational form given in \tref{T_RREQ}, the equation above expresses the law of mass action in the forward direction, where:\\
+
+& $r_+$ is the forward reaction rate (\si{\mole\per\second}).\\
+& $k_+$ is the forward rate constant (\si{\mole\per\second}).\\
+& $n$ is the number of reactants.\\
+& $A_i$ is the $i^{th}$ reactant species.\\
+& $\{A_i\}$ is the activity of $A_i$.\\
+& $\alpha_i$ is the stoichiometric coefficient of the $i^{\textrm{th}}$ reactant.\\
+\hline
+  Source &~\cite{wiki:eq}\\
+  \hline
+  Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& T\refstepcounter{theorynum}\thetheorynum \label{T_LMAB}\\
+\hline
+Label &\bf Law of mass action (backward) \\
+\hline
+Equation&$ r_- = k_- \displaystyle\prod_{j=1}^{m} \{B_j\}^{\beta_j} $ \\
+\hline
+Description &
+The law of mass action describes the forward and backward reaction rates for a chemical reaction.  For a chemical reaction expressed in the equational form given in \tref{T_RREQ}, the equation above expresses the law of mass action in the backward direction, where:\\
+
+& $r_-$ is the backward reaction rate (\si{\mole\per\second}).\\
+& $k_-$ is the backward rate constant (\si{\mole\per\second}).\\
+& $m$ is the number of products.\\
+& $B_j$ is the $j^{th}$ product species.\\
+& $\{B_j\}$ is the activity of $B_j$.\\
+& $\beta_j$ is the stoichiometric coefficient of the $j^{\textrm{th}}$ product.\\
+\hline
+  Source &~\cite{wiki:eq}\\
+  \hline
+  Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& T\refstepcounter{theorynum}\thetheorynum \label{T_EQ}\\
+\hline
+Label &\bf Chemical equilibrium \\
+\hline
+Equation&$ k_+ \displaystyle\prod_{i=1}^{n} \{A_i\}^{\alpha_i} = k_- \displaystyle\prod_{j=1}^{m} \{B_j\}^{\beta_j} $ \\
+\hline
+Description &
+When a chemical reaction is in equilibrium, the forward and reverse reaction rates are the same.  Using \tref{T_LMAF} and \tref{T_LMAB}, this idea is expressed in the equation above, where:\\
+& $k_+$ is the forward rate constant (\si{\mole\per\second}).\\
+& $n$ is the number of reactants.\\
+& $A_i$ is the $i^{th}$ reactant species.\\
+& $\{A_i\}$ is the activity of $A_i$.\\
+& $\alpha_i$ is the stoichiometric coefficient of the $i^{\textrm{th}}$ reactant.\\
+& $k_-$ is the backward rate constant (\si{\mole\per\second}).\\
+& $m$ is the number of products.\\
+& $B_j$ is the $j^{th}$ product species.\\
+& $\{B_j\}$ is the activity of $B_j$.\\
+& $\beta_j$ is the stoichiometric coefficient of the $j^{\textrm{th}}$ product.\\
+\hline
+  Source &~\cite{wiki:eq}\\
+  \hline
+  Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& T\refstepcounter{theorynum}\thetheorynum \label{T_K}\\
+\hline
+Label& \bf Equilibrium constant\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  Equation&$K = \dfrac{r_+}{r_-} = \dfrac{\prod_{j=1}^{m} \{B_j\}^{\beta_j}}{\prod_{i=1}^{n} \{A_i\}^{\alpha_i}}$\\
+  \hline
+  Description & 
+                The ratio of the forward and backward rate constants for a reaction forms a new constant called the equilibrium constant.  Using \tref{T_EQ}, we can relate the equilibrium constant to the activities of the products and reactants.  This is shown in the equation above, where:\\
+& $K$ is the equilibrium constant.\\
+& $r_+$ is the forward reaction rate (\si{\mole\per\second}).\\
+& $k_+$ is the forward rate constant (\si{\mole\per\second}).\\
+& $n$ is the number of reactants.\\
+& $A_i$ is the $i^{th}$ reactant species.\\
+& $\{A_i\}$ is the activity of $A_i$.\\
+& $\alpha_i$ is the stoichiometric coefficient of the $i^{\textrm{th}}$ reactant.\\
+& $r_-$ is the backward reaction rate (\si{\mole\per\second}).\\
+& $k_-$ is the backward rate constant (\si{\mole\per\second}).\\
+& $m$ is the number of products.\\
+& $B_j$ is the $j^{th}$ product species.\\
+& $\{B_j\}$ is the activity of $B_j$.\\
+& $\beta_j$ is the stoichiometric coefficient of the $j^{\textrm{th}}$ product.\\
+  \hline
+  Sources&~\cite{wiki:eq}  \\
+  \hline
+  Ref.\ By & \iref{ewat}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
 
 \subsubsection{General Definitions}\label{sec_gendef}
 
@@ -374,42 +588,33 @@ data definitions, which in turn are used to build the instance models.
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
 Number& GD\refstepcounter{defnum}\thedefnum \label{NL}\\
 \hline
-Label &\bf Newton's law of cooling \\
+Label &\bf Water dissociation equilibrium \\
 \hline
 % Units&$MLt^{-3}T^0$\\
 % \hline
-SI Units&\si{\watt\per\square\metre}\\
+SI Units&--\\
 \hline
-Equation&$ q(t) = h \Delta T(t)$  \\
+Equation&$ K_{H_2O}:~10^{-14} = \{H^+\} \cdot \{OH^-\} $  \\
 \hline
 Description &
-Newton's law of cooling describes convective cooling from a surface.  The law is
-stated as: the rate of heat loss from a body is proportional to the difference
-in temperatures between the body and its surroundings.
-\\
-& $q(t)$ is the thermal flux (\si{\watt\per\square\metre}).\\
-& $h$ is the heat transfer coefficient, assumed independent of $T$ (\aref{A_hcoeff})
-	(\si{\watt\per\square\metre\per\celsius}).\\
-&$\Delta T(t)$= $T(t) - T_{\text{env}}(t)$ is the time-dependent thermal gradient
-between the environment and the object (\si{\celsius}).
-\\
+This is the equilibrium equation for the dissociation of water.  The equation arises
+from \tref{T_K} using the value of $10^{-14}$ for the equilibrium constant at SATP, where:\\
+&$\{H^+\}$ is the activity of $H^+$\\
+&$\{OH^-\}$ is the activity of $OH^-$\\
 \hline
   Source &~\cite[p.\ 8]{Incropera2007}\\
   \hline
   Ref.\ By & \ddref{FluxCoil}, \ddref{FluxPCM}\\
   \hline
-\end{tabular}
+\end{tabu}
 \end{minipage}\\
 
-\subsubsection*{Detailed derivation of simplified rate of change of temperature}
-
-\wss{This may be necessary when the necessary information does not fit in the
-  description field.} 
 
 \subsubsection{Data Definitions}\label{sec_datadef}
 
@@ -422,46 +627,100 @@ models. The dimension of each quantity is also given.  \wss{Modify the examples
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
 \hline
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FluxCoil}\\
 \hline
-Label& \bf Heat flux out of coil\\
+Label& \bf Set of equilibria\\
 \hline
-Symbol &$q_C$\\
+Symbol &$\overline K$\\
 \hline
 % Units& $Mt^{-3}$\\
 % \hline
-  SI Units & \si{\watt\per\square\metre}\\
+  SI Units & --\\
   \hline
-  Equation&$q_C(t) = h_C (T_C - T_W(t))$, over area $A_C$\\
+  Equation&$\overline K = \left\{(R,K_R):\overline{RK}_{in} ~\bigcdot~ K_R = \dfrac{\prod_{j=1}^{m} \{B_{j}\}^{\beta_{j}}}{\prod_{i=1}^{n} \{A_{i}\}^{\alpha_{i}}}~\textrm{with reaction}~R\right\} \cup K_{H_2O}$\\
   \hline
-  Description & 
-                $T_C$ is the temperature of the coil (\si{\celsius}).  $T_W$ is the temperature of the water (\si{\celsius}).  
-                The heat flux out of the coil, $q_C$ (\si{\watt\per\square\metre}), is found by
-                assuming that Newton's Law 
-                of Cooling applies (\aref{A_Newt_coil}).  This law (\dref{NL}) is used on the surface of
-                the coil, which has area $A_C$ (\si{\square\metre}) and heat 
-                transfer coefficient $h_C$
-                (\si{\watt\per\square\metre\per\celsius}).  This equation
-                assumes that the temperature of the coil is constant over time (\aref{A_tcoil}) and that it does not vary along the length
-                of the coil (\aref{A_tlcoil}).
+  Description & Uses \tref{T_K}
   \\
   \hline
-  Sources&~\cite{Lightstone2012}  \\
+  Sources&~\cite{wiki:eq}  \\
   \hline
   Ref.\ By & \iref{ewat}\\
   \hline
-\end{tabular}
+\end{tabu}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FluxCoil}\\
+\hline
+Label& \bf Set of mass balance equations\\
+\hline
+Symbol &$\overline M$\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  SI Units & --\\
+  \hline
+  Equation&$\overline M = \left\{x_{tot}:\overline T_{in} ~\bigcdot~ \sum\{X : \overline S_{in} ~|~ x \in X ~\bigcdot~ \#x\langle X\rangle \cdot [X]\} = x_{tot}\right\}$\\
+  \hline
+  Description & Uses \tref{T_MB}
+  \\
+  \hline
+  Sources&~\cite{wiki:eq}  \\
+  \hline
+  Ref.\ By & \iref{ewat}\\
+  \hline
+\end{tabu}
+\end{minipage}\\
+
+~\newline
+
+\noindent
+\begin{minipage}{\textwidth}
+\renewcommand*{\arraystretch}{1.5}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
+\hline
+\rowcolor[gray]{0.9}
+Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{FluxCoil}\\
+\hline
+Label& \bf Charge balance equation\\
+\hline
+Symbol &$C$\\
+\hline
+% Units& $Mt^{-3}$\\
+% \hline
+  SI Units & --\\
+  \hline
+  Equation&$C:~ \sum\{X : \overline S_{in} ~\bigcdot~ z_{X} \cdot [X]\} = 0$\\
+  \hline
+  Description & Uses \tref{T_K}
+  \\
+  \hline
+  Sources&~\cite{wiki:eq}  \\
+  \hline
+  Ref.\ By & \iref{ewat}\\
+  \hline
+\end{tabu}
 \end{minipage}\\
 
 \subsubsection{Instance Models} \label{sec_instance}    
 
-This section transforms the problem defined in Section~\ref{Sec_pd} into 
+This section transforms the problem defined in \sref{Sec_pd} into 
 one which is expressed in mathematical terms. It uses concrete symbols defined 
-in Section~\ref{sec_datadef} to replace the abstract symbols in the models 
-identified in Sections~\ref{sec_theoretical} and~\ref{sec_gendef}.
+in \sref{sec_datadef} to replace the abstract symbols in the models 
+identified in \sref{sec_theoretical} and \sref{sec_gendef}.
 
 The goals \wss{reference your goals} are solved by \wss{reference your instance
   models}.  \wss{other details, with cross-references where appropriate.}
@@ -475,36 +734,27 @@ The goals \wss{reference your goals} are solved by \wss{reference your instance
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
-\begin{tabular}{| p{\colAwidth} | p{\colBwidth}|}
+\tabulinesep=1.5mm
+\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
   \hline
   \rowcolor[gray]{0.9}
   Number& IM\refstepcounter{instnum}\theinstnum \label{ewat}\\
   \hline
-  Label& \bf Energy balance on water to find $T_W$\\
+  Label& \bf System of non-linear equations to find equilibrium concentrations\\
   \hline
-  Input&$m_W$, $C_W$, $h_C$, $A_C$, $h_P$, $A_P$, $t_\text{final}$, $T_C$, 
-  $T_\text{init}$, $T_P(t)$ from \iref{epcm}\\
-  & The input is constrained so that $T_\text{init} \leq T_C$ (\aref{A_charge})\\
+  Input&$\overline K$, $\overline M$, $C$\\
   \hline
-  Output&$T_W(t)$, $0\leq t \leq t_\text{final}$, such that\\
-  &$\frac{dT_W}{dt} = \frac{1}{\tau_W}[(T_C - T_W(t)) + {\eta}(T_P(t) - T_W(t))]$,\\
-  &$T_W(0) = T_P(0) = T_\text{init}$ (\aref{A_InitTemp}) and $T_P(t)$ from \iref{epcm} \\
+  Output&$\{X:S ~|~ X \neq OH^- \land X \neq H^+ ~\bigcdot~ \{[X]~\textrm{for}~0 \leq pH \leq 14\} \}$,\\
+  &when the system of non-linear equations $\overline K \cup \overline M \cup C$ is satisfied\\
   \hline
-  Description&$T_W$ is the water temperature (\si{\celsius}).\\
-  &$T_P$ is the PCM temperature (\si{\celsius}).\\
-  &$T_C$ is the coil temperature (\si{\celsius}).\\
-  &$\tau_W = \frac{m_W C_W}{h_C A_C}$ is a constant (\si{\second}).\\
-  &$\eta = \frac{h_P A_P}{h_C A_C}$ is a constant (dimensionless).\\
-  & The above equation applies as long as the water is in liquid form,
-  $0<T_W<100^o\text{C}$, where $0^o\text{C}$ and $100^o\text{C}$ are the melting
-  and boiling points of water, respectively (\aref{A_OpRange}, \aref{A_Pressure}).
+  Description&
   \\
   \hline
   Sources&~\cite{Lightstone2012} \ \\
   \hline
   Ref.\ By & \iref{epcm}\\
   \hline
-\end{tabular}
+\end{tabu}
 \end{minipage}\\
 
 %~\newline
@@ -537,16 +787,14 @@ Table~\ref{TblSpecParams}.
   \textbf{Var} & \textbf{Physical Constraints} & \textbf{Software Constraints} &
                              \textbf{Typical Value} & \textbf{Uncertainty}\\
   \midrule 
-  $L$ & $L > 0$ & $L_{\text{min}} \leq L \leq L_{\text{max}}$ & 1.5 \si[per-mode=symbol] {\metre} & 10\%
+  $x_{tot}$ & $L > 0$ & $x_{{tot}_{\text{min}}} \leq x_{tot} $ & 0.1 \si[per-mode=symbol] {\mole\per\litre} & 2.5\%
   \\
   \bottomrule
+  \multicolumn{5}{l}{\scriptsize * The user.}\\
+  \multicolumn{5}{l}{\scriptsize ** There must be an accompanying equilibrium constant for every equation supplied by the user.}
 \end{longtable*}
 \end{table}
 
-\noindent 
-\begin{description}
-\item[(*)] \wss{you might need to add some notes or clarifications}
-\end{description}
 
 \begin{table}[!h]
 \caption{Specification Parameter Values} \label{TblSpecParams}
@@ -576,7 +824,7 @@ Table~\ref{TblSpecParams}.
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
 
 \noindent
-A correct solution must exhibit \wss{fill in the details}
+A correct solution must satisfy the system of non-linear equations described by \spc{FILL IN}.  
 
 \section{Requirements}
 
@@ -620,6 +868,8 @@ qualities that the software is expected to exhibit.
     the likely changes, with a reference to the related assumption (aref), as appropriate.}
 
 \end{itemize}
+
+\begin{comment}
 
 \section{Traceability Matrices and Graphs}
 
@@ -723,37 +973,7 @@ the assumptions.
 \label{Table:R_trace}
 \end{table}
 
-The purpose of the traceability graphs is also to provide easy references on
-what has to be additionally modified if a certain component is changed.  The
-arrows in the graphs represent dependencies. The component at the tail of an
-arrow is depended on by the component at the head of that arrow. Therefore, if a
-component is changed, the components that it points to should also be
-changed. Figure~\ref{Fig_ATrace} shows the dependencies of theoretical models,
-general definitions, data definitions, instance models, likely changes, and
-assumptions on each other. Figure~\ref{Fig_RTrace} shows the dependencies of
-instance models, requirements, and data constraints on each other.
-
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=\textwidth]{ATrace.png}
-% 		}
-% 		\caption{\label{Fig_ATrace} Traceability Matrix Showing the Connections Between Items of Different Sections}
-% 	\end{center}
-% \end{figure}
-
-
-% \begin{figure}[h!]
-% 	\begin{center}
-% 		%\rotatebox{-90}
-% 		{
-% 			\includegraphics[width=0.7\textwidth]{RTrace.png}
-% 		}
-% 		\caption{\label{Fig_RTrace} Traceability Matrix Showing the Connections Between Requirements, Instance Models, and Data Constraints}
-% 	\end{center}
-% \end{figure}
-
+\end{comment}
 \newpage
 
 \bibliographystyle {plainnat}
@@ -770,5 +990,6 @@ show the values of the symbolic parameters introduced in the report.}
 
 \wss{The definition of the requirements will likely call for SYMBOLIC\_CONSTANTS.
 Their values are defined in this section for easy maintenance.}
+
 
 \end{document}
