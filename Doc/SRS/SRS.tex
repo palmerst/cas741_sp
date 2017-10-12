@@ -228,11 +228,39 @@ $z_{X}$ & -- & charge number of an arbitrary aqueous solute $X$
 \subsection{Purpose of Document}
 The purpose of this document is to describe the requirements for the Aqueous Speciation Diagram Generator program (herein referred to as \progname), a software product that will produce a speciation diagram given a set of chemical reactions and element totals that define a chemical system as inputs.  The goals and theoretical models used in the SpecGen code are provided, with an emphasis on explicitly identifying assumptions and unambiguous definitions. This document is intended to be used as a reference to provide all information necessary to understand and verify the transformation of inputs to outputs. The SRS is abstract: the contents describe the problem being solved, but not how to solve it.
 
-This document will be used as a starting point for subsequent development phases, including writing the design specification and the software verification and validation plan. The design document will show how the requirements are to be realized, including decisions on the numerical algorithms and programming environment. The verification and validation plan will show the steps that will be used to increase confidence in the software documentation and the implementation. Although the SRS fits in a series of documents that follow the so-called waterfall model, the actual development process is not constrained in any way. Even when the waterfall model is not followed, as \cite{ParnasAndClements1986} point out, the most logical way to present the documentation is still to "fake" a rational design process.
+This document will be used as a starting point for subsequent development
+phases, including writing the design specification and the software verification
+and validation plan. The design document will show how the requirements are to
+be realized, including decisions on the numerical algorithms and programming
+environment. The verification and validation plan will show the steps that will
+be used to increase confidence in the software documentation and the
+implementation. Although the SRS fits in a series of documents that follow the
+so-called waterfall model, the actual development process is not constrained in
+any way. Even when the waterfall model is not followed, as
+\cite{ParnasAndClements1986} point out, the most logical way to present the
+documentation is still to "fake" \wss{Use ``fake'' to get correct quotation
+  marks} a rational design process.
+
+\wss{The text is better for version control, and for reading in other editors,
+  if you use a hard-wrap at 80 characters}
 
 \subsection{Scope of Requirements} 
-\spc{Note: Think about what should actually go here for revision 1.  Major assumptions?}
-The scope of the requirements includes collecting all input parameters that describe a chemical system. Given the appropriate inputs, the code for SpecGen is intended to use the data to produce a speciation diagram in the pH range 0 to 14. 
+\spc{Note: Think about what should actually go here for revision 1.  Major
+  assumptions?} \wss{The first sentence below reads like a restating of what the
+  program does.  I think we say this enough already.  I like the idea of the
+  scope listing the ``major'' assumptions.  I think you are right about pH being
+an problem defining assumption.  What about the fact that the system is in an
+aqueous environment?  The SATP assumption also seems like a scope level
+assumption to me.  Maybe ``scope assumptions'' are those that need to be made to
+build the theory models?  Assumptions that are subsequently used to build the
+instance model would then be outside of the scope of scope.  We can test this
+idea by applying it to our examples and seeing which assumptions would be
+classified as scope assumptions.}
+The scope of the requirements includes collecting all input parameters that
+describe a chemical system. Given the appropriate inputs, the code for SpecGen
+is intended to use the data to produce a speciation diagram in the pH range 0 to
+14.  \wss{Did you define pH anywhere?  I know it is basic knowledge (acidic
+  knowledge? :-) ), but I think it would add to the document.}
 
 \subsection{Characteristics of Intended Reader} 
 Reviewers of this documentation should have an understanding of first year undergraduate physical chemistry.
@@ -292,7 +320,10 @@ easier to correctly understand the requirements:
 \begin{description}
 \item[Activity:] the ``effective concentration'' of a species in a chemical system
 \item[Equilibrium:] the state of a chemical system in which species concentrations are stable
-\item[SATP:] standard ambient temperature pressure $(T = 25^{\circ}\textrm{C}, ~P = 1~\textrm{bar})$
+\item[SATP:] standard ambient temperature pressure
+  $(T = 25^{\circ}\textrm{C}, ~P = 1~\textrm{bar})$ \wss{When you define an
+    acronym, in the expanded form you should capitalize the letters that are
+    being used.} \wss{$P$ is not in your list of symbols.}
 \end{description}
 
 \subsubsection{Physical System Description}
@@ -315,6 +346,12 @@ The physical system of \progname{} includes the following elements:
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_solve}:] Calculate the equilibrium concentrations of all chemical species present in the system over the pH range 0 to 14.
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_plot}:] Generate a plot of the equilibrium concentrations of all chemical species present in the system versus pH.
 \end{itemize}
+
+\wss{The more I think about it, the more I think you really only have one goal -
+  to generate the plot.  The calculations are implied by the need to generate
+  the plot.  Maybe we can start thinking about goals as the outputs of the
+  software?  In general goal statements can characterize at a high level
+  (abstract level) the inputs and the outputs.}
 
 \subsection{Solution Characteristics Specification}
 
@@ -362,7 +399,10 @@ on.
   \rowcolor[gray]{0.9}
   Number& T\refstepcounter{theorynum}\thetheorynum \label{T_RREQ}\\
   \hline
-  Label&\bf Equational representation of reversible chemical reactions\\
+  Label&\bf Equational representation of reversible chemical reactions \wss{This
+    feels more like a notation than a theoretical model.  Maybe it is just the
+    heading?  If the theory were instead labelled Reversible Chemical Reactions,
+    it would seem like a theory to me.}\\
   \hline
   Equation&  ${\alpha}_1 {A}_{1} + \cdots + {\alpha}_n {A}_{n} \rightleftharpoons {\beta}_1 {B}_{1} + \cdots + {\beta}_m {B}_{m}$\\
   \hline
@@ -396,7 +436,16 @@ on.
   \hline
   Equation&  $x_{tot} = \sum\{X : \overline S ~|~ x \in X ~\bigcdot~ \#x\langle X\rangle \cdot [X]\}$\\
   \hline
-  Description & 
+  Description & \wss{I think you need to explain your mathematical notation.  I
+    know you had the idea of a pointer to a description for Z, but you could
+    likely summarize the notation in the document itself, without mentioning Z.
+    The notation you are using is like the Gries and Schneider notation.
+    Something like: The above equations use the Gries and Schneider
+notation~\cite[p. 143]{GriesAndSchneider1993} for set building and evaluation of
+an operator applied over a set of values.  Specifically, the expression
+$(*x: X | R : P)$ means application of the operator $*$ to the values $P$ for
+all $x$ of type $X$ for which range $R$ is true.  In the above equations, the
+$*$ operators ...}
                 The total dissolved concentration of an element in an aqueous solution is equal to the sum of the concentrations of all species which contain that element.  This is captured in the above equation, where:\\
               & $x$ is a chemical element\\
               & $x_{tot}$ is the total dissolved concentration of $x$ in a solution\\
@@ -631,7 +680,8 @@ models. The dimension of each quantity is also given.
 \rowcolor[gray]{0.9}
 Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD_setK}\\
 \hline
-Label& \bf Set of equilibria\\
+Label& \bf Set of equilibria \wss{I like the idea of adding fields for types to
+  your problem.}\\
 \hline
 Symbol &$\overline K$\\
 \hline
@@ -961,5 +1011,10 @@ the assumptions.
 \bibliographystyle {plainnat}
 \bibliography {../../ReferenceMaterial/References}
 
+~\newline
+
+\wss{In your ReferenceMaterial folder, can you please put the initial document
+  written by my brother?  We should also cite this document somewhere in your
+  SRS.}
 
 \end{document}
