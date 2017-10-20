@@ -3,8 +3,12 @@ import re
 ## species map
 species = {}
 
+## species number
+sN = 1
+
 class Species:
   def __init__(self, spString):
+    global sN
   
     ## parse the species for charge and state
     def parseSpecies(str):
@@ -120,9 +124,12 @@ class Species:
       self.state = sp.state
       self.charge = sp.charge
       self.composition = sp.composition
+      self.number = sp.number
       return
     
     ## otherwise, parse and store in species    
     self.formula = spString   
     (self.state, self.charge, self.composition) = parseSpecies(spString)
+    self.number = sN
+    sN += 1
     species[spString] = self

@@ -35,7 +35,7 @@ class ChemEq:
       ## parse and store the species
       Species(sp)
     
-      return (sp, num)
+      return (sp, int(num))
     
     ## store reactants + numbers in r dict
     for reactant in reactants:
