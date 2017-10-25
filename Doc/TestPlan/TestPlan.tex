@@ -124,16 +124,16 @@ The test team includes the following members:
 \end{itemize}
 
 \subsection{Automated Testing Approach}
-The majority of testing for \progname{} will be carried out using automated unit 
-tests (both true unit tests as well as integration tests). Since \progname{} is 
-small in scope and will be implemented by a single developer, other forms of 
-automated testing (continuous integration, regression testing, etc.) will not 
-be considered.
+The automated testing for \progname{} will be carried out using a set of unit 
+and integrations tests.  A test coverage analysis of these tests will be 
+carried out to ensure that testing is as complete as possible.  The target 
+for this analysis is 100\% statement coverage. 
 
-A test coverage analysis of the automated testing will also be carried out to 
-ensure that testing is as complete as possible.  The target for this analysis 
-is 100\% statement coverage.  \spc{Since \progname{} will be relatively small, 
-an expectation of 100\% coverage is not unreasonable?}
+Regression testing will be used during the implementation stage and for any 
+future changes.  Since \progname{} is small in scope and will be implemented 
+by a single developer, other forms of automated testing, such as continuous 
+integration testing, will not be considered.
+
 
 \subsection{Verification Tools}
 The following tools will be used to facilitate testing:
