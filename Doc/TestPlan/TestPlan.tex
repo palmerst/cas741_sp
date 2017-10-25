@@ -158,61 +158,6 @@ N/A
 
 \subsubsection{Input Testing}
 
-\noindent {\bf Equation Parser Tests}\\
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG}: Equation 
-  Parser, General}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] String representation of chemical reaction
-					
-\item[Output:] Data structure of reaction equation components
-					
-\item[How test will be performed:] Automated unit test \\
-\end{description}
-\end{addmargin}			
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPE1}: Equation 
-  Parser, Edge Case 1}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] String representation of chemical equation that hits edges cases 
-  (want full coverage)
-					
-\item[Output:] Data structure of reaction equation components
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-\noindent \spc{Edge cases will be added during implementation (after data 
-structures and exact format of input is decided).  For simplicity going forward, 
-edge cases are ignored (since at this point I don't know the number/nature of 
-the edge cases).  They will be added as the implementation is developed.}\\
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_IDS}: Input Data 
-Structure}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Input data (?)
-					
-\item[Output:] Data structure works -- probably several tests
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-
-\spc{Unit tests + integration tests?}\\
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG_I}: Equation 
 Parser, Integration}\\
 \begin{addmargin}[2em]{0em}
@@ -245,30 +190,10 @@ Data Structure, Integration}\\
 \end{description}
 \end{addmargin}		
 
-\end{addmargin}
-
-
 
 \subsubsection{Derived Input Testing}
 
-\noindent {\bf Derived Species Tests}\\
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL}: Species 
-List from Equation}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] String representation of chemical reaction
-					
-\item[Output:] List of species contained in reaction
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL_I}: Species 
 List from Equation, Integration}\\
 \begin{addmargin}[2em]{0em}
@@ -491,14 +416,85 @@ R5	&	\testref{T_Out_SpecGen}, \testref{T_Out_SpecGen_I}\\
 				
 \section{Unit Testing Plan}
 		
-\wss{Unit testing plans for internal functions and, if appropriate, output
-  files}
-  
-\spc{I'm not sure what goes here?  Unit tests are all described in the System 
-  Test Description section.}
+\subsection{Input Testing}
 
-\bibliographystyle{plainnat}
+\begin{addmargin}[2em]{0em}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG}: Equation 
+  Parser, General}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] String representation of chemical reaction
+					
+\item[Output:] Data structure of reaction equation components
+					
+\item[How test will be performed:] Automated unit test \\
+\end{description}
+\end{addmargin}			
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPE1}: Equation 
+  Parser, Edge Case 1}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] String representation of chemical equation that hits edges cases 
+  (want full coverage)
+					
+\item[Output:] Data structure of reaction equation components
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+\noindent \spc{Edge cases will be added during implementation (after data 
+structures and exact format of input is decided).  For simplicity going forward, 
+edge cases are ignored (since at this point I don't know the number/nature of 
+the edge cases).  They will be added as the implementation is developed.}\\
 
-\bibliography{SRS}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_IDS}: Input Data 
+Structure}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] Input data (?)
+					
+\item[Output:] Data structure works -- probably several tests
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+\end{addmargin}
+
+
+\subsection{Derived Input Module Testing}
+
+\begin{addmargin}[2em]{0em}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL}: Species 
+List from Equation}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] String representation of chemical reaction
+					
+\item[Output:] List of species contained in reaction
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+\end{addmargin}
+
+%\bibliographystyle{plainnat}
+
+%\bibliography {../../ReferenceMaterial/References}
 
 \end{document}
