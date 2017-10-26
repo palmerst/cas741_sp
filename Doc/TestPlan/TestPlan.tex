@@ -13,6 +13,7 @@
 \usepackage[round]{natbib}
 \usepackage{fullpage}
 \usepackage{scrextend}
+\usepackage{amsmath}
 
 \newcommand{\progname}{SpecGen}
 
@@ -45,6 +46,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 10.13.2017 & S. Palmer & First revision of document\\
+10.25.2017 & S. Palmer & Revision 0 submission\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -152,7 +154,7 @@ The following tools will be used to facilitate testing:
 N/A
 
 \section{System Test Description}
-\spc{Intial states, inputs, outputs will be formalized as implementation 
+\spc{Intial states, inputs, outputs will be formalized/revised as implementation 
   proceeds.}	
 \subsection{Tests for Functional Requirements}
 
@@ -164,11 +166,13 @@ Parser, Integration}\\
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file with general chemical reaction
+\item[Input:] Input file with general chemical reaction\\
+\spc{TODO: change this to the actual input file text with implementation}
 					
-\item[Output:] Data structure of reaction equation components
+\item[Output:] Data structure with input reaction equation components\\
+\spc{TODO: change this to the actual output structure when implemented}
 					
 \item[How test will be performed:] Automated integration test \\
 \end{description}
@@ -180,11 +184,13 @@ Data Structure, Integration}\\
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file
-					
-\item[Output:] Data structure works -- probably several tests
+\item[Input:] Input file\\
+\spc{TODO: change this to the actual input file text with implementation}
+
+\item[Output:] Input parameters stored by the program match the input file\\
+\spc{TODO: change this to the actual output structure when implemented}
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
@@ -195,16 +201,39 @@ Data Structure, Integration}\\
 
 \begin{addmargin}[2em]{0em}
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL_I}: Species 
-List from Equation, Integration}\\
+List from Equation, Distinct Species in Equation}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file
+\item[Input:] Input file with reaction:\\
+H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$\\
+\spc{TODO: change this to 
+  the actual input file text with implementation}
 					
-\item[Output:] List of species contained in reaction
+\item[Output:] List of species [H$_2$O, H$^+$, OH$^-$, H$_2$CO$_3$$_\text{(aq)}$, HCO$_3^-$]
+					
+\item[How test will be performed:] Automated integration test\\
+\end{description}
+\end{addmargin}
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL_R_I}: Species 
+List from Equations, Repeated Species in Equations}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Integration
+					
+\item[Initial State:] N/A
+					
+\item[Input:] Input file with reactions:\\
+H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$\\
+HCO$_3^-$ $\rightleftharpoons$ H$^+$ + CO$_3^{2-}$\\
+\spc{TODO: change this to 
+  the actual input file text with implementation}
+					
+\item[Output:] List of species [H$_2$O, H$^+$, OH$^-$, H$_2$CO$_3$$_\text{(aq)}$, HCO$_3^-$, CO$_3^{2-}$]
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
@@ -213,98 +242,79 @@ List from Equation, Integration}\\
 
 \subsubsection{Input Constraint Testing}
 
-\noindent {\bf Element Concentration Tests}\\
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECNeg}: 
-Negative Element Total Concentration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Negative concentration
-					
-\item[Output:] Error
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECZero}: Zero 
-Element Total Concentration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Zero concentration
-					
-\item[Output:] Error
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECPos}: 
-Positive Element Total Concentration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Positive concentration
-					
-\item[Output:] Positive concentration
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_I}: Element 
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Neg_I}: Element 
 Total Concentration, Integration}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file
+\item[Input:] Input file with Fe$_{\text{tot}}$ = -1.0\\
+\spc{TODO: change this to the actual input file text with implementation}
 					
-\item[Output:] Concentration
+\item[Output:] Error
+					
+\item[How test will be performed:] Automated integration test\\
+\end{description}
+\end{addmargin}
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Zero_I}: Element 
+Total Concentration, Zero, Integration}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Integration
+					
+\item[Initial State:] N/A
+					
+\item[Input:] Input file with Fe$_{\text{tot}}$ = 0.0\\
+\spc{TODO: change this to the actual input file text with implementation}
+					
+\item[Output:] Error
+					
+\item[How test will be performed:] Automated integration test\\
+\end{description}
+\end{addmargin}
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Pos_I}: Element 
+Total Concentration, Positive, Integration}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Integration
+					
+\item[Initial State:] N/A
+					
+\item[Input:] Input file with Fe$_{\text{tot}}$ = 1.0\\
+\spc{TODO: change this to the actual input file text with implementation}
+					
+\item[Output:] Fe$_{\text{tot}}$ = 1.0
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
 \end{addmargin}
 \end{addmargin}
 
-\subsubsection{Input Conversion Testing}
-\spc{\progname{} will convert inputs into a set of non-linear equations to be 
-solved by a non-linear solver.  This will involve some sort of module/code, but 
-none of this corresponds to an actual requirement.  Should I have explicit tests 
-for this even though it doesn't map to a requirement?  Even without tests here, 
-this will still end up being testing in the integration tests for calculations 
-and output.}
+
 
 \subsubsection{Calculation Testing}
 
-\noindent {\bf Non-Linear Equation Solver Tests}\\
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver}: 
-Non-Linear Equation System Solution}\\
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver_Parallel_I}: 
+Non-Linear Equation System Solution, Integration}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Unit
+\item[Type:] Functional, Automatic, Parallel, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] System of non-linear equations
+\item[Input:] Input file with same data as the MATLAB implementation\\
+\spc{TODO: change this to the actual input file text with implementation}
 					
-\item[Output:] Solution that satisfies original system of equations
+\item[Output:] Solution that matches the MATLAB implementation\\
+\spc{TODO: get data from MATLAB implementation}
 					
-\item[How test will be performed:] Automated unit test\\
+\item[How test will be performed:] Automated integration test\\
 \end{description}
 \end{addmargin}
 
@@ -314,11 +324,14 @@ Non-Linear Equation System Solution, Integration}\\
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file
+\item[Input:] Input file with redundant equation:\\
+Fe$^{3+}$ $\rightleftharpoons$ Fe$^{3+}$, K = 1.0\\
+Fe$_{\text{tot}}$ = 0.1\\
+\spc{TODO: change this to the actual input file text with implementation}
 					
-\item[Output:] Solution that satisfies original system of equations
+\item[Output:] [Fe$^{3+}$] = 0.1 M at all pH
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
@@ -327,36 +340,26 @@ Non-Linear Equation System Solution, Integration}\\
 
 \subsubsection{Output Testing}
 
-\noindent {\bf Speciation Diagram Generation Tests}\\
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Out_SpecGen}: 
-Speciation Diagram}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Manual, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Output specifications
-					
-\item[Output:] Speciation diagram
-					
-\item[How test will be performed:] The generated speciation diagram will be 
-manually reviewed to ensure that it matches the specified output.\\
-\end{description}
-\end{addmargin}
-
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Out_SpecGen_I}: 
 Speciation Diagram, Integration}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Functional, Manual, Integration
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] Input file
+\item[Input:] Input file with:\\
+CO$_2$$_\text{(aq)}$ + H$_2$O $\rightleftharpoons$ H$_2$CO$_3$$_\text{(aq)}$, 
+  K = $1.7\times10^{−3}$\\
+H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$, 
+  K = $2.5\times10^{−4}$\\
+HCO$_3^-$ $\rightleftharpoons$ H$^+$ + CO$_3^{2-}$, K = $4.69\times10^{−11}$\\
+C$_{\text{tot}}$ = 0.1\\
+\spc{TODO: change this to the actual input file text with implementation}
 					
-\item[Output:] Speciation diagram
+\item[Output:] Correct carbonate speciation diagram\\
+\spc{TODO: should I link to diagram here?}
 					
 \item[How test will be performed:] The generated speciation diagram will be 
 manually reviewed to ensure that it matches the diagram expected by the input 
@@ -365,23 +368,18 @@ specifications.\\
 \end{addmargin}
 \end{addmargin}
 
+
 \subsection{Tests for Nonfunctional Requirements}
 
-\subsubsection{Output Readability Tests}
+\subsubsection{Output Readability Testing}
 		
 \noindent {\bf }
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_}: Readability of 
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_NF_Read}: Readability of 
 generated speciation diagram}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Nonfunctional, Manual
-					
-\item[Initial State:] ?
-					
-\item[Input:] Input file
-					
-\item[Output:] Speciation diagram
 					
 \item[How test will be performed:] This is a qualitative test to ensure that the 
 diagrams generated by \progname{} are readable (axis labels visible, curves 
@@ -391,9 +389,9 @@ distinguishable from eachother, legend/labelling of curves, etc.).\\
 
 \end{addmargin}
 
-\newpage
-\section{Traceability Between Test Cases and Requirements}
-A trace between tests and requirements is provided in 
+
+\section{Traceability Between System Tests and Requirements}
+A trace between system tests and requirements is provided in 
 \hyperref[tab:reqtrace]{Table~\ref*{tab:reqtrace}}.
 
 \begin{table}[h]
@@ -402,21 +400,21 @@ A trace between tests and requirements is provided in
 \begin{tabularx}{0.55\textwidth}{p{4cm}X}
 \toprule {\bf Requirement} & {\bf Test(s)}\\
 \midrule
-R1	&	\testref{T_In_EPG}, \testref{T_In_EPE1}, \testref{T_In_IDS}, 
-      \testref{T_In_EPG_I}, \testref{T_In_IDS_I}\\
-R2	&	\testref{T_DIn_SL}, \testref{T_DIn_SL_I}\\
-R3	&	\testref{T_CIn_ECNeg}, \testref{T_CIn_ECZero}, \testref{T_CIn_ECPos}, 
-      \testref{T_CIn_EC_I}\\
-R4	&	\testref{T_Calc_Solver}, \testref{T_Calc_Solver_I}\\
-R5	&	\testref{T_Out_SpecGen}, \testref{T_Out_SpecGen_I}\\
+R1	&	\testref{T_In_EPG_I}, \testref{T_In_IDS_I}\\
+R2	&	\testref{T_DIn_SL_I}, \testref{T_DIn_SL_R_I}\\
+R3	&	\testref{T_CIn_EC_Neg_I}, \testref{T_CIn_EC_Zero_I}, \testref{T_CIn_EC_Pos_I}\\
+R4	&	\testref{T_Calc_Solver_Parallel_I}, \testref{T_Calc_Solver_I}\\
+R5	&	\testref{T_Out_SpecGen_I}\\
+NF1 & \testref{T_NF_Read}~\spc{TODO: add NF1 to SRS}\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
-				
+\newpage		
 \section{Unit Testing Plan}
+\spc{Just a rough idea of unit tests -- will update with implementation.}
 		
-\subsection{Input Testing}
+\subsection{Input Module Testing}
 
 \begin{addmargin}[2em]{0em}
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG}: Equation 
@@ -492,6 +490,119 @@ List from Equation}\\
 \end{description}
 \end{addmargin}
 \end{addmargin}
+
+\subsection{Input Constraints Module Testing}
+
+\begin{addmargin}[2em]{0em}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECNeg}: 
+Negative Element Total Concentration}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] Negative concentration
+					
+\item[Output:] Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECZero}: Zero 
+Element Total Concentration}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] Zero concentration
+					
+\item[Output:] Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECPos}: 
+Positive Element Total Concentration}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] Positive concentration
+					
+\item[Output:] Positive concentration
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+\end{addmargin}
+
+\subsubsection{Conversion Module Testing}
+\spc{\progname{} will convert inputs into a set of non-linear equations to be 
+solved by a non-linear solver.  This will involve some sort of module/code to 
+be tested here.}
+
+\subsection{Calculation Module Testing}
+\begin{addmargin}[2em]{0em}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver}: 
+Non-Linear Equation System Solution}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Automatic, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] System of non-linear equations
+					
+\item[Output:] Solution that satisfies original system of equations
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+\end{addmargin}
+
+\subsection{Output Module Testing}
+
+\begin{addmargin}[2em]{0em}
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Out_SpecGen}: 
+Speciation Diagram}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Functional, Manual, Unit
+					
+\item[Initial State:] ?
+					
+\item[Input:] Output specifications
+					
+\item[Output:] Speciation diagram
+					
+\item[How test will be performed:] The generated speciation diagram will be 
+manually reviewed to ensure that it matches the specified output.\\
+\end{description}
+\end{addmargin}
+\end{addmargin}
+
+\newpage
+\section{Traceability Between Unit Tests and Modules}
+A trace between unit tests and modules is provided in 
+\hyperref[tab:modtrace]{Table~\ref*{tab:modtrace}}.
+
+\begin{table}[h]
+\caption{Module Traceability} \label{tab:modtrace}
+\centering
+\begin{tabularx}{0.55\textwidth}{p{4cm}X}
+\toprule {\bf Module} & {\bf Test(s)}\\
+\midrule
+\spc{TODO:  fill in once implementation is done}&\\
+\bottomrule
+\end{tabularx}
+\end{table}
 
 %\bibliographystyle{plainnat}
 
