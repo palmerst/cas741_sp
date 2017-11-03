@@ -10,12 +10,13 @@
 \usepackage{hyperref}
 \hypersetup{
     colorlinks,
-    citecolor=black,
+    citecolor=red,
     filecolor=black,
     linkcolor=red,
     urlcolor=blue
 }
-\usepackage[round]{natbib}
+
+\input{../../Comments}
 
 \newcounter{acnum}
 \newcommand{\actheacnum}{AC\theacnum}
@@ -29,41 +30,47 @@
 \newcommand{\mthemnum}{M\themnum}
 \newcommand{\mref}[1]{M\ref{#1}}
 
-\title{SE 3XA3: Software Requirements Specification\\Title of Project}
-
-\author{Team \#, Team Name
-		\\ Student 1 name and macid
-		\\ Student 2 name and macid
-		\\ Student 3 name and macid
-}
-
-\date{\today}
-
-\input{../../Comments}
+\newcommand{\progname}{SpecGen}
 
 \begin{document}
+\pagenumbering{gobble}
 
+\title{CAS 741: Module Guide\\[10pt]\Large Aqueous Speciation Diagram Generator}
+\author{Steven Palmer\\\texttt{palmes4}}
+\date{\today}
+	
 \maketitle
 
 \pagenumbering{roman}
-\tableofcontents
-\listoftables
-\listoffigures
 
-\begin{table}[bp]
-\caption{\bf Revision History}
-\begin{tabularx}{\textwidth}{p{3cm}p{2cm}X}
-\toprule {\bf Date} & {\bf Version} & {\bf Notes}\\
+\setcounter{secnumdepth}{0}
+
+\section{Revision History}
+
+\begin{table}[hp]
+\caption{Revision History} \label{TblRevisionHistory}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
-Date 1 & 1.0 & Notes\\
-Date 2 & 1.1 & Notes\\
+11.02.2017 & S. Palmer & First revision of document\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
+~\newpage
+
+\tableofcontents
+
+\listoftables
+
+\listoffigures
+
 \newpage
 
 \pagenumbering{arabic}
+
+\setcounter{secnumdepth}{3}
 
 \section{Introduction}
 
@@ -134,9 +141,23 @@ change.
 \begin{description}
 \item[\refstepcounter{acnum} \actheacnum \label{acHardware}:] The specific
   hardware on which the software is running.
-\item[\refstepcounter{acnum} \actheacnum \label{acInput}:] The format of the
-  initial input data.
-\item ...
+\item[\refstepcounter{acnum} \actheacnum \label{acEI}:] The exposed interface 
+  of the library.  
+\item[\refstepcounter{acnum} \actheacnum \label{acI}:] The structure of the stored
+  chemical system.
+\item[\refstepcounter{acnum} \actheacnum \label{acIE}:] The format of the
+  input data with respect to chemical equations.  
+\item[\refstepcounter{acnum} \actheacnum \label{acIS}:] The format of the
+  input data with respect to chemical species.
+\item[\refstepcounter{acnum} \actheacnum \label{acC}:] How the input data is 
+  transformed into speciation data.
+\item[\refstepcounter{acnum} \actheacnum \label{acIC}:] How the input is converted
+  to a form usable by the non-linear solver.
+\item[\refstepcounter{acnum} \actheacnum \label{acDG}:] How the speciation diagram
+  is generated from the output data.
+\item[\refstepcounter{acnum} \actheacnum \label{acNLS}:] The non-linear solver
+  algorithm.
+\item[\refstepcounter{acnum} \actheacnum \label{acP}:] The plotting algorithm.
 \end{description}
 
 \subsection{Unlikely Changes} \label{SecUchange}
@@ -151,9 +172,6 @@ decisions will be changed.
 \begin{description}
 \item[\refstepcounter{ucnum} \uctheucnum \label{ucIO}:] Input/Output devices
   (Input: File and/or Keyboard, Output: File, Memory, and/or Screen).
-\item[\refstepcounter{ucnum} \uctheucnum \label{ucInput}:] There will always be
-  a source of input data external to the software.
-\item ...
 \end{description}
 
 \section{Module Hierarchy} \label{SecMH}
@@ -165,7 +183,15 @@ actually be implemented.
 
 \begin{description}
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item ...
+\item [\refstepcounter{mnum} \mthemnum \label{mEI}:] External Interface Module
+\item [\refstepcounter{mnum} \mthemnum \label{mCS}:] Chemical System Module
+\item [\refstepcounter{mnum} \mthemnum \label{mEP}:] Equation Parser Module
+\item [\refstepcounter{mnum} \mthemnum \label{mSP}:] Species Parser Module
+\item [\refstepcounter{mnum} \mthemnum \label{mC}:] Calculation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mIC}:] Input Conversion Module
+\item [\refstepcounter{mnum} \mthemnum \label{mDG}:] Diagram Generation Module
+\item [\refstepcounter{mnum} \mthemnum \label{mNLS}:] Non-linear Solver Module
+\item [\refstepcounter{mnum} \mthemnum \label{mP}:] Plotting Module
 \end{description}
 
 
@@ -179,19 +205,17 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\
-& ?\\ 
-& ?\\
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & External Interface Module\\
+& Chemical System Module\\
+& Species Parser Module\\
+& Equation Parser Module\\
+& Input Conversion Module\\
+& Calculation Module\\
+& Diagram Generation Module\\ 
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & {?}\\
-& ?\\
-& ?\\
+\multirow{3}{0.3\textwidth}{Software Decision Module} & Non-linear Solver Module\\
+& Plotting Module\\
 \bottomrule
 
 \end{tabular}
@@ -246,16 +270,66 @@ selected.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Input Format Module (\mref{mInput})}
+\subsubsection{External Interface Module (\mref{mEI})}
 
 \begin{description}
-\item[Secrets:]The format and structure of the input data.
-\item[Services:]Converts the input data into the data structure used by the
-  input parameters module.
-\item[Implemented By:] [Your Program Name Here]
+\item[Secrets:]The exposed interface of the library.
+\item[Services:]Provides the external interface of the library that can by used
+  by programs.
+\item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Chemical System Module (\mref{mCS})}
+
+\begin{description}
+\item[Secrets:]The structure of the stored chemical system.
+\item[Services:]Provides the data structure for storing the input data.
+\item[Implemented By:] \progname{}
+\end{description}
+
+\subsubsection{Equation Parser Module (\mref{mEP})}
+
+\begin{description}
+\item[Secrets:]The format of the input data with respect to chemical equations.
+\item[Services:]Parses input (chemical equations) and converts to a format
+  used by \mref{mCS}.
+\item[Implemented By:] \progname{}
+\end{description}
+
+\subsubsection{Species Parser Module (\mref{mSP})}
+
+\begin{description}
+\item[Secrets:]The format of the input data with respect to chemical species.
+\item[Services:]Parses input (chemical species) and converts to a format
+  used by \mref{mCS}.
+\item[Implemented By:] \progname{}
+\end{description}
+
+\subsubsection{Calculation Module (\mref{mC})}
+
+\begin{description}
+\item[Secrets:]How the input data is transformed into speciation data.
+\item[Services:]Calculates equilibrium concentrations of all species over
+  a pH range.
+\item[Implemented By:] \progname{}
+\end{description}
+
+\subsubsection{Input Conversion Module (\mref{mIC})}
+
+\begin{description}
+\item[Secrets:]How the input is converted to a form usable by the non-linear solver.
+\item[Services:]Converts input data into a format that can be passed to the non-linear solver.
+\item[Implemented By:] \progname{}
+\end{description}
+
+\subsubsection{Diagram Generation Module (\mref{mDG})}
+
+\begin{description}
+\item[Secrets:]How the speciation diagram is generated from the speciation data.
+\item[Services:]Generates a speciation diagram from speciation data.
+\item[Implemented By:] \progname{}
+\end{description}
+
 
 
 \subsection{Software Decision Module}
@@ -271,8 +345,27 @@ selected.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Etc.}
+\subsubsection{Non-linear Solver Module (\mref{mNLS})}
 
+\begin{description}
+\item[Secrets:] The non-linear solver algorithm.
+\item[Services:] Calculates a solution for a non-linear system of equations.
+  % Changes in these modules are more likely to be motivated by a desire to
+  % improve performance than by externally imposed changes.
+\item[Implemented By:] Python
+\end{description}
+
+\subsubsection{Plotting Module (\mref{mP})}
+
+\begin{description}
+\item[Secrets:] The plotting algorithm.
+\item[Services:] Produces plots (as image files). 
+  % Changes in these modules are more likely to be motivated by a desire to
+  % improve performance than by externally imposed changes.
+\item[Implemented By:] Python
+\end{description}
+
+\newpage
 \section{Traceability Matrix} \label{SecTM}
 
 This section shows two traceability matrices: between the modules and the
@@ -286,17 +379,11 @@ requirements and between the modules and the anticipated changes.
 \toprule
 \textbf{Req.} & \textbf{Modules}\\
 \midrule
-R1 & \mref{mHH}, \mref{mInput}, \mref{mParams}, \mref{mControl}\\
-R2 & \mref{mInput}, \mref{mParams}\\
-R3 & \mref{mVerify}\\
-R4 & \mref{mOutput}, \mref{mControl}\\
-R5 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R6 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}, \mref{mSeqDS}, \mref{mSolver}, \mref{mPlot}\\
-R7 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R8 & \mref{mOutput}, \mref{mEnergy}, \mref{mControl}, \mref{mSeqDS}, \mref{mPlot}\\
-R9 & \mref{mVerifyOut}\\
-R10 & \mref{mOutput}, \mref{mODEs}, \mref{mControl}\\
-R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
+R1 & \mref{mEI}, \mref{mCS}, \mref{mEP}, \mref{mSP}\\
+R2 & \mref{mCS}, \mref{mEP}, \mref{mSP}\\
+R3 & \mref{mCS}\\
+R4 & \mref{mEI}, \mref{mC}, \mref{mIC}, \mref{mNLS}\\
+R5 & \mref{mHH}, \mref{mEI}, \mref{mDG}, \mref{mP}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -310,23 +397,22 @@ R11 & \mref{mOutput}, \mref{mODEs}, \mref{mEnergy}, \mref{mControl}\\
 \textbf{AC} & \textbf{Modules}\\
 \midrule
 \acref{acHardware} & \mref{mHH}\\
-\acref{acInput} & \mref{mInput}\\
-\acref{acParams} & \mref{mParams}\\
-\acref{acVerify} & \mref{mVerify}\\
-\acref{acOutput} & \mref{mOutput}\\
-\acref{acVerifyOut} & \mref{mVerifyOut}\\
-\acref{acODEs} & \mref{mODEs}\\
-\acref{acEnergy} & \mref{mEnergy}\\
-\acref{acControl} & \mref{mControl}\\
-\acref{acSeqDS} & \mref{mSeqDS}\\
-\acref{acSolver} & \mref{mSolver}\\
-\acref{acPlot} & \mref{mPlot}\\
+\acref{acEI} & \mref{mEI}\\
+\acref{acI} & \mref{mCS}\\
+\acref{acIS} & \mref{mSP}\\
+\acref{acIE} & \mref{mEP}\\
+\acref{acC} & \mref{mC}\\
+\acref{acIC} & \mref{mIC}\\
+\acref{acDG} & \mref{mDG}\\
+\acref{acNLS} & \mref{mNLS}\\
+\acref{acP} & \mref{mP}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Anticipated Changes and Modules}
 \label{TblACT}
 \end{table}
 
+\newpage
 \section{Use Hierarchy Between Modules} \label{SecUse}
 
 In this section, the uses hierarchy between modules is
@@ -342,7 +428,7 @@ because they use modules from the lower levels.
 
 \begin{figure}[H]
 \centering
-%\includegraphics[width=0.7\textwidth]{UsesHierarchy.png}
+\includegraphics[width=0.8\textwidth]{UsesHierarchy.pdf}
 \caption{Use hierarchy among modules}
 \label{FigUH}
 \end{figure}
