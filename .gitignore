@@ -10,3 +10,5 @@
 *.cb
 *.cb2
 *.synctex.gz
+*.bbl
+*.blg
