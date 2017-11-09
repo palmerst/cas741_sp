@@ -54,6 +54,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 11.02.2017 & S. Palmer & First revision of document\\
+11.08.2017 & S. Palmer & Revision 0\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -145,9 +146,9 @@ change.
   of the library.  
 \item[\refstepcounter{acnum} \actheacnum \label{acI}:] The structure of the stored
   chemical system.
-\item[\refstepcounter{acnum} \actheacnum \label{acIE}:] The format of the
+\item[\refstepcounter{acnum} \actheacnum \label{acIE}:] The structure and format of the
   input data with respect to chemical equations.  
-\item[\refstepcounter{acnum} \actheacnum \label{acIS}:] The format of the
+\item[\refstepcounter{acnum} \actheacnum \label{acIS}:] The structure and format of the
   input data with respect to chemical species.
 \item[\refstepcounter{acnum} \actheacnum \label{acC}:] How the input data is 
   transformed into speciation data.
@@ -182,16 +183,16 @@ below, which are leaves in the hierarchy tree, are the modules that will
 actually be implemented.
 
 \begin{description}
-\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding Module
-\item [\refstepcounter{mnum} \mthemnum \label{mEI}:] External Interface Module
-\item [\refstepcounter{mnum} \mthemnum \label{mCS}:] Chemical System Module
-\item [\refstepcounter{mnum} \mthemnum \label{mEP}:] Equation Parser Module
-\item [\refstepcounter{mnum} \mthemnum \label{mSP}:] Species Parser Module
-\item [\refstepcounter{mnum} \mthemnum \label{mC}:] Calculation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mIC}:] Input Conversion Module
-\item [\refstepcounter{mnum} \mthemnum \label{mDG}:] Diagram Generation Module
-\item [\refstepcounter{mnum} \mthemnum \label{mNLS}:] Non-linear Solver Module
-\item [\refstepcounter{mnum} \mthemnum \label{mP}:] Plotting Module
+\item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding
+\item [\refstepcounter{mnum} \mthemnum \label{mEI}:] External Interface
+\item [\refstepcounter{mnum} \mthemnum \label{mCS}:] Chemical System
+\item [\refstepcounter{mnum} \mthemnum \label{mEP}:] Equation
+\item [\refstepcounter{mnum} \mthemnum \label{mSP}:] Species
+\item [\refstepcounter{mnum} \mthemnum \label{mC}:] Calculation
+\item [\refstepcounter{mnum} \mthemnum \label{mIC}:] Input Conversion
+\item [\refstepcounter{mnum} \mthemnum \label{mDG}:] Diagram Generation
+\item [\refstepcounter{mnum} \mthemnum \label{mNLS}:] Non-linear Solver
+\item [\refstepcounter{mnum} \mthemnum \label{mP}:] Plotting
 \end{description}
 
 
@@ -205,17 +206,17 @@ actually be implemented.
 {Hardware-Hiding Module} & ~ \\
 \midrule
 
-\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & External Interface Module\\
-& Chemical System Module\\
-& Species Parser Module\\
-& Equation Parser Module\\
-& Input Conversion Module\\
-& Calculation Module\\
-& Diagram Generation Module\\ 
+\multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & External Interface\\
+& Chemical System\\
+& Species Parser\\
+& Equation Parser\\
+& Input Conversion\\
+& Calculation\\
+& Diagram Generation\\ 
 \midrule
 
-\multirow{3}{0.3\textwidth}{Software Decision Module} & Non-linear Solver Module\\
-& Plotting Module\\
+\multirow{2}{0.3\textwidth}{Software Decision} & Non-linear Solver\\
+& Plotting\\
 \bottomrule
 
 \end{tabular}
@@ -247,7 +248,7 @@ that the module is not a leaf and will not have to be implemented. Whether or
 not this module is implemented depends on the programming language
 selected.
 
-\subsection{Hardware Hiding Modules (\mref{mHH})}
+\subsection{Hardware Hiding (\mref{mHH})}
 
 \begin{description}
 \item[Secrets:]The data structure and algorithm used to implement the virtual
@@ -258,7 +259,7 @@ selected.
 \item[Implemented By:] OS
 \end{description}
 
-\subsection{Behaviour-Hiding Module}
+\subsection{Behaviour-Hiding}
 
 \begin{description}
 \item[Secrets:]The contents of the required behaviours.
@@ -270,7 +271,7 @@ selected.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{External Interface Module (\mref{mEI})}
+\subsubsection{External Interface (\mref{mEI})}
 
 \begin{description}
 \item[Secrets:]The exposed interface of the library.
@@ -279,7 +280,7 @@ selected.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Chemical System Module (\mref{mCS})}
+\subsubsection{Chemical System (\mref{mCS})}
 
 \begin{description}
 \item[Secrets:]The structure of the stored chemical system.
@@ -287,25 +288,27 @@ selected.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Equation Parser Module (\mref{mEP})}
+\subsubsection{Equation (\mref{mEP})}
 
 \begin{description}
-\item[Secrets:]The format of the input data with respect to chemical equations.
+\item[Secrets:]The structure and format of the input data with respect to 
+chemical equations.
 \item[Services:]Parses input (chemical equations) and converts to a format
   used by \mref{mCS}.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Species Parser Module (\mref{mSP})}
+\subsubsection{Species (\mref{mSP})}
 
 \begin{description}
-\item[Secrets:]The format of the input data with respect to chemical species.
+\item[Secrets:]The structure and format of the input data with respect to 
+chemical species.
 \item[Services:]Parses input (chemical species) and converts to a format
   used by \mref{mCS}.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Calculation Module (\mref{mC})}
+\subsubsection{Calculation (\mref{mC})}
 
 \begin{description}
 \item[Secrets:]How the input data is transformed into speciation data.
@@ -314,15 +317,17 @@ selected.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Input Conversion Module (\mref{mIC})}
+\subsubsection{Input Conversion (\mref{mIC})}
 
 \begin{description}
-\item[Secrets:]How the input is converted to a form usable by the non-linear solver.
-\item[Services:]Converts input data into a format that can be passed to the non-linear solver.
+\item[Secrets:]How the input is converted to a form usable by the non-linear 
+  solver.
+\item[Services:]Converts input data into a format that can be passed to the 
+  non-linear solver.
 \item[Implemented By:] \progname{}
 \end{description}
 
-\subsubsection{Diagram Generation Module (\mref{mDG})}
+\subsubsection{Diagram Generation (\mref{mDG})}
 
 \begin{description}
 \item[Secrets:]How the speciation diagram is generated from the speciation data.
@@ -332,7 +337,7 @@ selected.
 
 
 
-\subsection{Software Decision Module}
+\subsection{Software Decision}
 
 \begin{description}
 \item[Secrets:] The design decision based on mathematical theorems, physical
@@ -345,23 +350,19 @@ selected.
 \item[Implemented By:] --
 \end{description}
 
-\subsubsection{Non-linear Solver Module (\mref{mNLS})}
+\subsubsection{Non-linear Solver (\mref{mNLS})}
 
 \begin{description}
 \item[Secrets:] The non-linear solver algorithm.
 \item[Services:] Calculates a solution for a non-linear system of equations.
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
 \item[Implemented By:] Python
 \end{description}
 
-\subsubsection{Plotting Module (\mref{mP})}
+\subsubsection{Plotting (\mref{mP})}
 
 \begin{description}
 \item[Secrets:] The plotting algorithm.
 \item[Services:] Produces plots (as image files). 
-  % Changes in these modules are more likely to be motivated by a desire to
-  % improve performance than by externally imposed changes.
 \item[Implemented By:] Python
 \end{description}
 
