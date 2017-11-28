@@ -70,9 +70,33 @@ f = FunctionType(feq_code, {})
 ## END GENERATION 
 ##############################################
 
+
 res = [fsolve(f, (10**-7,10**-7), ph) for ph in range(0, 15)]
 
 for (h, oh) in res:
   print(h, oh)
+  
+print("\n\n")
 
+a = parse("\
+from math import log10\n\n\
+def f():\n\
+  return log10(3)")
+  
+a = "\
+from math import log10\n\n\
+def f():\n\
+  return log10(3)"
 
+exec(a, globals())  
+  
+#a_code = compile(a, "<not_a_file>", "exec")
+## get the function bytecode
+#f_code = [c for c in a_code.co_consts if isinstance(c, CodeType)][0]
+
+#print(a_code.co_consts)
+
+## create function from bytecode
+#f = FunctionType(f_code, {})
+
+print(f())
