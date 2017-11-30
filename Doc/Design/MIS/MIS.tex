@@ -1,0 +1,689 @@
+\documentclass[12pt, titlepage]{article}
+
+\usepackage{amsmath, mathtools}
+
+\usepackage[round]{natbib}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{colortbl}
+\usepackage{xr}
+\usepackage{hyperref}
+\usepackage{longtable}
+\usepackage{xfrac}
+\usepackage{tabularx}
+\usepackage{float}
+\usepackage{siunitx}
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[section]{placeins}
+\usepackage{caption}
+\usepackage{fullpage}
+
+\hypersetup{
+bookmarks=true,     % show bookmarks bar?
+colorlinks=true,       % false: boxed links; true: colored links
+linkcolor=red,          % color of internal links (change box color with linkbordercolor)
+citecolor=blue,      % color of links to bibliography
+filecolor=magenta,  % color of file links
+urlcolor=cyan          % color of external links
+}
+
+\usepackage{array}
+
+\input{../../Comments}
+
+\newcommand\pfun{\mathrel{\ooalign{\hfil$\mapstochar\mkern5mu$\hfil\cr$\to$\cr}}}
+\newcommand{\progname}{SpecGen}
+
+\makeatletter
+\newcommand*\bigcdot{\mathpalette\bigcdot@{.7}}
+\newcommand*\bigcdot@[2]
+  {\mathbin{\vcenter{\hbox{\scalebox{#2}{$\m@th#1\bullet$}}}}}
+\makeatother
+
+\begin{document}
+
+\pagenumbering{gobble}
+
+\title{CAS 741: Module Interface Specification\\[10pt]\Large Aqueous Speciation Diagram Generator}
+\author{Steven Palmer\\\texttt{palmes4}}
+\date{\today}
+	
+\maketitle
+
+\pagenumbering{roman}
+
+\setcounter{secnumdepth}{0}
+
+\section{Revision History}
+
+\begin{table}[hp]
+\caption{Revision History} \label{TblRevisionHistory}
+\begin{tabularx}{\textwidth}{llX}
+\toprule
+\textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
+\midrule
+11.29.2017 & S. Palmer & Revision 0 submission\\
+\bottomrule
+\end{tabularx}
+\end{table}
+
+~\newpage
+
+\section{Symbols, Abbreviations and Acronyms}
+
+See \href{https://github.com/palmerst/cas741_sp/blob/master/Doc/SRS/SRS.pdf}{SRS Documentation}.
+
+\newpage
+
+\tableofcontents
+
+
+\newpage
+
+
+\pagenumbering{arabic}
+
+\setcounter{secnumdepth}{3}
+
+\section{Introduction}
+
+The following document details the Module Interface Specifications for
+the Aqueous Speciation Diagram Generator program.
+
+Complementary documents include the System Requirement Specifications
+and Module Guide.  The full documentation and implementation can be
+found \href{https://github.com/palmerst/cas741_sp}{here}.
+
+\section{Notation}
+
+The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
+with the addition that template modules have been adapted from
+\cite{GhezziEtAl2003}.  All template modules described in the MIS are assumed to have
+getters for state variables; they will not be explicitly specified.  The mathematical 
+notation comes from Chapter 3 of
+\citet{HoffmanAndStrooper1995}, as well as \cite{GS1993}.  For instance, 
+the symbol := is used for a
+multiple assignment statement and conditional rules follow the form $(c_1
+\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+
+The following table summarizes the primitive data types used by \progname. 
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\noindent 
+\begin{tabular}{l l p{7.5cm}} 
+\toprule 
+\textbf{Data Type} & \textbf{Notation} & \textbf{Description}\\ 
+\midrule
+character & char & a single symbol or digit\\
+integer & $\mathbb{Z}$ & a number without a fractional component in (-$\infty$, $\infty$) \\
+natural number & $\mathbb{N}$ & a number without a fractional component in [1, $\infty$) \\
+real & $\mathbb{R}$ & any number in (-$\infty$, $\infty$)\\
+\bottomrule
+\end{tabular} 
+\end{center}
+
+\noindent
+The specification of \progname \ uses some derived data types: sets, sequences, strings, and
+tuples. Sets are an unordered unique collection of elements of the same data type.  
+Sequences are lists filled with elements of the same data type. Strings
+are sequences of characters. Tuples contain a list of values, potentially of
+different types. In addition, \progname \ uses functions (partial and total), which
+are defined by the data types of their inputs and outputs. Local functions are
+described by giving their type signature followed by their specification.\\
+
+\noindent
+Since chemical reactions, species and elements are central to \progname{}, the following 
+notation is introduced in an attempt to simplify the presentation of the MIS.\\
+
+\noindent
+Chemical reactions:\\
+
+${\alpha}_1 {A}_{1} + \cdots + {\alpha}_n {A}_{n} 
+    \rightleftharpoons {\beta}_1 {B}_{1} + \cdots + {\beta}_m {B}_{m} \qquad K$\\
+
+where $A_i$ are reactant species, $\alpha_i$ are the stoichiometric numbers
+of the reactant species, $n$ is the number of reactant species, $B_i$ are product species,
+$\beta_i$ are the stoichiometric numbers of the product species, $m$ is the number of
+product species, and $K$ is the equilibrium constant.\\
+
+\noindent
+Chemical species:\\
+
+${{E}^1_{e1}}\cdots{{E}^n_{en}}^{z}_{(s)}$\\
+
+where $E^i$ are chemical elements, $e_i$ are the number of each element
+$E^i$ in the species, $n$ is the number of distinct elements in the species,
+$z$ is the charge, and $s$ is the state.\\
+
+\spc{I'm doing this so I don't have to do explicit parsing specification.  The specification for 
+that was getting really ugly really fast and was too close to code.  Using ``pseudo-types'' 
+(is that the right word?)
+ends up specifying what the parsers will need to do, but doesn't lock in any particular input
+string structure or parsing routine.  I think that's better anyway!}
+\noindent
+The following pseudo-types are used in this document.  The species and 
+reaction psuedo-types are treated as strings with fields that correspond to the variables
+in the notations given above.  Note that these types are only used for convenience with
+respect to specification and
+will not occur in the \progname{} implementation.
+
+\begin{center}
+\renewcommand{\arraystretch}{1.2}
+\noindent 
+\begin{tabular}{l l p{7.5cm}} 
+\toprule 
+\textbf{Pseudo Type} & \textbf{Notation} & \textbf{Resolves To}\\ 
+\midrule
+species & $\mathbb{S}$ & string representation of a chemical species\\
+reaction & $\mathbb{X}$ & string representation of a chemical reaction \\
+element & $\mathbb{E}$ & string representation of a chemical element \\
+\bottomrule
+\end{tabular} 
+\end{center}
+
+ 
+
+\section{Module Decomposition}
+
+The following table is taken directly from the Module Guide document for this project.
+\spc{Note to self:  update MG modules}
+\begin{table}[h!]
+\centering
+\begin{tabular}{p{0.3\textwidth} p{0.6\textwidth}}
+\toprule
+\textbf{Level 1} & \textbf{Level 2}\\
+\midrule
+
+{Hardware-Hiding Module} & ~ \\
+\midrule
+
+\multirow{6}{0.3\textwidth}{Behaviour-Hiding Module} & External Interface\\
+& Chemical System\\
+& Species\\
+& Reaction\\
+& Input Conversion\\
+& Calculation\\
+\midrule
+
+\multirow{2}{0.3\textwidth}{Software Decision} & Non-linear Solver\\
+& Plotting\\
+\bottomrule
+
+\end{tabular}
+\caption{Module Hierarchy}
+\label{TblMH}
+\end{table}
+
+\newpage
+~\newpage
+
+\section{MIS of External Interface}
+
+\subsection{Module}
+
+SpecGen
+
+\subsection{Uses}
+
+ChemSys (Section \ref{Module:ChemSys})
+
+\subsection{Syntax}
+
+\subsubsection{Re-Exported Types}
+
+ChemSys
+
+\subsubsection{Re-Exported Access Programs}
+
+ChemSys
+\newline registerRxn
+\newline registerTotal
+\newline specGen
+
+
+\subsection{Semantics}
+
+N/A
+
+~\newpage
+
+\section{MIS of Chemical System} \label{Module:ChemSys}
+
+\subsection{Template Module}
+
+ChemSys
+
+\subsection{Uses}
+
+Species (Section \ref{Module:Species})
+\newline ChemEq (Section \ref{Module:Reaction})
+\newline Calculation (Section \ref{Module:Calculation})
+\newline Plotting (Section \ref{Module:Plotting})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Types}
+
+ChemSys = ?
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{3cm} p{3cm} p{3cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+ChemSys & - & ChemSys & - \\
+registerRxn & $\mathbb{X}$ & - & - \\
+registerTotal & $\mathbb{E}$, $\mathbb{R}$ & - & NonPositiveConc \\ 
+specGen & fileName: String & - & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+rxns: Set of ChemEq
+\newline species: $\mathbb{S} \pfun$ Species
+\newline totals: $\mathbb{E} \pfun \mathbb{R}$ 
+
+\subsubsection{Environment Variables}
+FileSystem: The file system of the machine running \progname
+
+\subsubsection{Access Routine Semantics}
+
+\noindent ChemSys():
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] rxns := $\varnothing$
+                  \item[] species := \{ \\
+                  \hspace*{2em} (H$^+_{(aq)}$, Species(H$^+_{(aq)}$, aq, $1$, \{(H, 1)\})),\\
+                  \hspace*{2em} (OH$^-_{(aq)}$, Species(OH$^-_{(aq)}$, aq, $-1$, \{(H, 1), (O, 1)\})),\\
+                  \hspace*{2em} (H$_2$O$_{(l)}$, Species(H$_2$O$_{(l)}$, l, $0$, \{(H, 2), (O, 1)\})),\\
+                  \} 
+                  \item[] totals := $\varnothing$
+                  \end{itemize}
+\item output: \begin{itemize} 
+              \item[] \emph{out} := self 
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+\noindent registerRxn(rx):
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] rxns := rxns $\cup$ ChemEq(\\
+                  \hspace*{2em}log rx.K,\\
+                  \hspace*{2em} $\{~\forall~i : \mathbb{N}~|~ i \leq \textrm{rx.n}  ~\bigcdot~ 
+                    (\textrm{rx.A}_\textrm{i}, \textrm{rx.}\alpha_\textrm{i})~\}$,\\
+                  \hspace*{2em} $\{~\forall~i : \mathbb{N}~|~ i \leq \textrm{rx.m}  ~\bigcdot~ 
+                    (\textrm{rx.B}_i, \textrm{rx.}\beta_i)~\}$\\
+                  )
+                  \item[] species := species $\cup$ \{~$\forall~\textrm{sp} : \mathbb{S}
+                    ~|~ \textrm{sp} \notin \textrm{dom(species)} \land \textrm{sp} \in \textrm{rx} ~\bigcdot~ $\\
+                    \hspace*{2em}(sp, Species(sp, sp.s, sp.z, \{ $\forall~\textrm{i} : 
+                      \mathbb{N}~|~ \textrm{i} \leq \textrm{sp.n} ~\bigcdot~ $(sp.E$_\textrm{i}$, sp.e$_\textrm{i}$)~\}))\\
+                  \}
+                  \end{itemize}
+\item output: N/A
+\item exception: N/A
+\end{itemize}
+
+\noindent registerTotal(elt, tot):
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] totals := totals $\cup$ \{~(elt, tot)~\}
+                  \end{itemize}
+\item output: N/A
+\item exception: \begin{itemize}
+                 \item[] \emph{exc} := (tot $\leq 0 \implies$ NonPositiveConc)
+                 \end{itemize}
+\end{itemize}
+
+\noindent specGen(fileName):
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] FileSystem := plot(calcSpec(self), fileName)
+                  \end{itemize}
+\item output: N/A
+\item exception: N/A
+\end{itemize}
+
+~\newpage
+
+\section{MIS of Species} \label{Module:Species}
+
+\subsection{Template Module}
+
+Species
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Types}
+
+Species = ?\\
+State = \{s, l, g, aq\}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+Species & formula: $\mathbb{S}$ 
+          \newline state: State
+          \newline charge: $\mathbb{Z}$
+          \newline composition: $\mathbb{E} \pfun \mathbb{N}$ 
+                 & Species & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+formula:  $\mathbb{S}$
+\newline state:  State
+\newline charge:  $\mathbb{Z}$
+\newline composition: $\mathbb{E} \pfun \mathbb{N}$
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent Species(formula, state, charge, composition):
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] self.formula := formula
+                  \item[] self.state := state
+                  \item[] self.charge := charge
+                  \item[] self.composition := composition
+                  \end{itemize}
+\item output: \begin{itemize} 
+              \item[] \emph{out} := self 
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+
+~\newpage
+
+
+\section{MIS of Reaction} \label{Module:Reaction}
+
+\subsection{Template Module}
+
+ChemEq
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Types}
+
+ChemEq = ?
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{4cm} p{4cm} p{2cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+ChemEq & reaction: $\mathbb{X}$ 
+         \newline logK: $\mathbb{R}$
+         \newline r: $\mathbb{S} \pfun \mathbb{N}$
+         \newline p: $\mathbb{S} \pfun \mathbb{N}$ 
+                 & ChemEq & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+reaction: $\mathbb{X}$ 
+\newline logK: $\mathbb{R}$
+\newline r: $\mathbb{S} \pfun \mathbb{N}$
+\newline p: $\mathbb{S} \pfun \mathbb{N}$ 
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent ChemEq(reaction, logK, r, p):
+\begin{itemize}
+\item transition: \begin{itemize} 
+                  \item[] self.reaction := reaction
+                  \item[] self.logK := logK
+                  \item[] self.r := r
+                  \item[] self.p := p
+                  \end{itemize}
+\item output: \begin{itemize} 
+              \item[] \emph{out} := self 
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+~\newpage
+
+
+\section{MIS of Input Conversion} \label{Module:Convert} 
+
+\subsection{Module}
+
+Convert
+
+\subsection{Uses}
+
+ChemSys (Section \ref{Module:ChemSys})
+\newline Species (Section \ref{Module:Species})
+\newline ChemEq (Section \ref{Module:Reaction})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{3cm} p{3cm} p{3.2cm} p{2.8cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+makeRootFunc & syst: ChemSys & Set of \newline $\mathbb{R}^{n} \rightarrow \mathbb{R}$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+N/A
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent makeRootFunc(syst):
+\begin{itemize}
+\item transition: N/A
+\item output: \begin{itemize} 
+              \item[] \emph{out} := \{ $\forall$ r : ChemEq $|$ r $\in$ syst.rxn $\bigcdot$ \\
+                  \hspace*{2em} $\lambda$($\forall$ s : $\mathbb{S}$ $|$ s $\in$ dom(syst.species) $\land$ s.s = aq $\bigcdot$ C$_s$) .\\
+                  \hspace*{4em}$\sum$($\forall$ s : $\mathbb{S}$ $|$ s $\in$ dom(r.p) $\land$ s.s = aq $\bigcdot$ r.p(s) $\cdot$ log C$_s$)\\
+                  \hspace*{4em}$- \sum$($\forall$ s : $\mathbb{S}$ $|$ s $\in$ dom(r.r) $\land$ s.s = aq $\bigcdot$ r.r(s) $\cdot$ log C$_s$)\\
+                  \hspace*{4em}$-$ r.logK\\
+              \} $\cup$ \{ $\forall$ e : $\mathbb{E}$ $|$ e $\in$ dom(syst.totals) $\bigcdot$ \\
+                \hspace*{2em} $\lambda$($\forall$ s : $\mathbb{S}$ $|$ s $\in$ syst.species $\land$ s.s = aq  $\bigcdot$ C$_s$) .\\
+                \hspace*{4em} log $\sum(\forall$ s : $\mathbb{S}$ $|$ s $\in$ dom(syst.species) \\
+                \hspace*{6em} $\land$ e $\in$ dom(syst.species(s).composition) $\bigcdot$ \\
+                \hspace*{8em} syst.species(s).composition(e) $\cdot$ C$_s$)\\
+                \hspace*{4em} $-$ log syst.totals(e)\\
+              \}
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+
+~\newpage
+
+
+\section{MIS of Calculation} \label{Module:Calculation} 
+
+\subsection{Module}
+
+Calculation
+
+\subsection{Uses}
+
+ChemSys (Section \ref{Module:ChemSys})
+\newline Convert (Section \ref{Module:Convert})
+\newline Solver (Section \ref{Module:NLS})
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{3cm} p{4.5cm} p{2.5cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+calcSpec & syst: ChemSys & Set of ($\mathbb{R}$, $\mathbb{R}^{n}$) & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+N/A
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent calcSpec(syst):
+\begin{itemize}
+\item transition: N/A
+\item output: \begin{itemize} 
+              \item[] \emph{out} := \{ $\forall$ pH : $\mathbb{R}$ $|$ 0 $\leq$ pH $\leq$ 14 $\bigcdot$\\
+                \hspace*{2em}(pH, deLog(rootSolve(partialApply(makeRootFunc(syst), pH))))\\
+                \}
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+\subsubsection{Local Functions}
+partialApply: (Set of $\mathbb{R}^{n} \rightarrow \mathbb{R}$) $\times$ $\mathbb{R}$ $\rightarrow$ 
+  (Set of $\mathbb{R}^{n - 2} \rightarrow \mathbb{R}$)
+\newline partialApply(eqs, pH) $\equiv$ \{ $\forall$ f : eqs $\bigcdot$ f(C$_{H^+}$ = 10$^{-pH}$, C$_{OH^-}$ = 10$^{pH - 14}$) \}\\
+
+\noindent deLog:  $\mathbb{R}^{n} \rightarrow \mathbb{R}^{n}$
+\newline deLog(concs) $\equiv$ map($\lambda$x.$10^x$, concs)
+
+~\newpage
+
+
+\section{MIS of Non-Linear Solver} \label{Module:NLS} 
+
+\subsection{Module}
+
+Solver
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2.8cm} p{3.6cm} p{2.8cm} p{2.8cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+rootSolve & eqs: Set of $\mathbb{R}^n \rightarrow \mathbb{R}$ \newline for any n : $\mathbb{N}$ & $\mathbb{R}^n$ & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+N/A
+
+
+\subsubsection{Access Routine Semantics}
+
+\noindent rootSolve(eqs):
+\begin{itemize}
+\item transition: N/A
+\item output: \begin{itemize} 
+              \item[] \emph{out} := res, where ($\forall$ f : eqs $\bigcdot$ f(res) = 0)
+              \end{itemize}
+\item exception: N/A
+\end{itemize}
+
+
+~\newpage
+
+\section{MIS of Plotting} \label{Module:Plotting} 
+
+\subsection{Module}
+
+Plotting
+
+\subsection{Uses}
+
+N/A
+
+\subsection{Syntax}
+
+\subsubsection{Exported Access Programs}
+
+\begin{center}
+\begin{tabular}{p{2cm} p{4cm} p{3cm} p{3cm}}
+\hline
+\textbf{Name} & \textbf{In} & \textbf{Out} & \textbf{Exceptions} \\
+\hline
+plot & data: Set of ($\mathbb{R}$, $\mathbb{R}^n$) 
+  \newline \hspace*{1em}for any n : $\mathbb{N}$
+  \newline fileName: String & - & - \\
+\hline
+\end{tabular}
+\end{center}
+
+\subsection{Semantics}
+
+\subsubsection{State Variables}
+N/A
+
+\subsubsection{Environment Variables}
+FileSystem: The file system of the machine running \progname
+
+\subsubsection{Access Routine Semantics}
+
+\noindent plot(data, fileName):
+\begin{itemize}
+\item transition: Creates a new image file with path \emph{fileName} in 
+  \emph{FileSystem} with a 2D plot of the set of data in \emph{data}.  The 
+  first item in each tuple of \emph{data} is the x-value and the second item 
+  contains y-values that should be paired with that x-value.    
+\item output: N/A
+\item exception: N/A
+\end{itemize}
+
+\newpage
+
+\bibliographystyle {plainnat}
+\bibliography {../../../ReferenceMaterial/References}
+
+\end{document}
