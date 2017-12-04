@@ -90,23 +90,25 @@ See \href{https://github.com/palmerst/cas741_sp/blob/master/Doc/SRS/SRS.pdf}{SRS
 \section{Introduction}
 
 The following document details the Module Interface Specifications for
-the Aqueous Speciation Diagram Generator program.
+the Aqueous Speciation Diagram Generator program. \wss{I suggest combining these
+  two paragraphs into one paragraph.  Usually 1 sentence paragraphs aren't a
+  great idea, and the ideas in the two paragraphs are related.}
 
 Complementary documents include the System Requirement Specifications
 and Module Guide.  The full documentation and implementation can be
-found \href{https://github.com/palmerst/cas741_sp}{here}.
+found \href{https://github.com/palmerst/cas741_sp}{here}. 
 
 \section{Notation}
 
 The structure of the MIS for modules comes from \citet{HoffmanAndStrooper1995},
 with the addition that template modules have been adapted from
-\cite{GhezziEtAl2003}.  All template modules described in the MIS are assumed to have
-getters for state variables; they will not be explicitly specified.  The mathematical 
-notation comes from Chapter 3 of
-\citet{HoffmanAndStrooper1995}, as well as \cite{GS1993}.  For instance, 
-the symbol := is used for a
-multiple assignment statement and conditional rules follow the form $(c_1
-\Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
+\cite{GhezziEtAl2003}.  All template modules described in the MIS are assumed to
+have getters for state variables; they will not be explicitly specified.
+\wss{good idea} The mathematical notation comes from Chapter 3 of
+\citet{HoffmanAndStrooper1995}, as well as \cite{GS1993}.  For instance, the
+symbol := is used for a multiple assignment statement and conditional rules
+follow the form
+$(c_1 \Rightarrow r_1 | c_2 \Rightarrow r_2 | ... | c_n \Rightarrow r_n )$.
 
 The following table summarizes the primitive data types used by \progname. 
 
@@ -154,9 +156,14 @@ Chemical species:\\
 
 ${{E}^1_{e1}}\cdots{{E}^n_{en}}^{z}_{(s)}$\\
 
-where $E^i$ are chemical elements, $e_i$ are the number of each element
-$E^i$ in the species, $n$ is the number of distinct elements in the species,
-$z$ is the charge, and $s$ is the state.\\
+where $E^i$ are chemical elements, $e_i$ are the number of each element $E^i$ in
+the species, $n$ is the number of distinct elements in the species, $z$ is the
+charge, and $s$ is the state.\\ \wss{What are the possible values of state?  It
+  seems like state would be a type with 2 or 3 values.  I don't know if you
+  cover a gaseous state, but I'm assuming that s could represent solid or
+  liquid.  What is the notation for one versions the other?  I see from reading
+  ahead that there are 4 possible states.  I didn't think of aqueous as a state,
+  but that makes sense now.  You should define the State type here.}
 
 \spc{I'm doing this so I don't have to do explicit parsing specification.  The specification for 
 that was getting really ugly really fast and was too close to code.  Using ``pseudo-types'' 
@@ -165,7 +172,7 @@ ends up specifying what the parsers will need to do, but doesn't lock in any par
 string structure or parsing routine.  I think that's better anyway!}
 \noindent
 The following pseudo-types are used in this document.  The species and 
-reaction psuedo-types are treated as strings with fields that correspond to the variables
+reaction pseudo-types are treated as strings with fields that correspond to the variables
 in the notations given above.  Note that these types are only used for convenience with
 respect to specification and
 will not occur in the \progname{} implementation.
@@ -184,7 +191,23 @@ element & $\mathbb{E}$ & string representation of a chemical element \\
 \end{tabular} 
 \end{center}
 
- 
+\wss{I've never heard of the term pseudo-types, but I like what you are doing
+  here.  You have introduced a notation that makes the spec easier to read for a
+  human being.  I think this is the right idea.  From the Drasil perspective,
+  how we connect the human readable spec with the eventual computer code isn't
+  clear, but from an MIS ``software engineering'' perspective, you are on the
+  right track.}
+
+\wss{Rather than $\mathbb{S}$ etc being strings, would it make more sense to
+  define new types?  The type might be a tuple with fields for molecule and
+  charge.  The molecule in turn could be a sequence  to tuples, where each of
+  these tuples is an element and a number of occurrences.  There are only so
+  many elements to make up the set of elements.  We could use something like
+  this to turn your pseudo type into a real type.  We could go further and
+  capture information about molecules so that the charge could be derived
+  automatically (I think).  I'm not sure exactly what I'm thinking here, but it
+  seems like an opportunity to capture information better than we would just
+  carrying a string around.}
 
 \section{Module Decomposition}
 
@@ -224,11 +247,15 @@ The following table is taken directly from the Module Guide document for this pr
 
 \subsection{Module}
 
-SpecGen
+SpecGen \wss{What does this module do that you couldn't get by just having the
+  ChemSys module?  Except for the fact that ChemSys exports an ADT, the syntax
+  of the interfaces are the same?}
 
 \subsection{Uses}
 
 ChemSys (Section \ref{Module:ChemSys})
+
+\wss{Nice to see explicit cross referencing and hyperlinks in the uses section.}
 
 \subsection{Syntax}
 
@@ -396,6 +423,9 @@ formula:  $\mathbb{S}$
 \newline charge:  $\mathbb{Z}$
 \newline composition: $\mathbb{E} \pfun \mathbb{N}$
 
+\wss{This feels close to a formal model of a species, except for the formula
+  string and the string for E.  Could we also introduce a type for E?  There is
+  a finite set of possibilities for this set.}
 
 \subsubsection{Access Routine Semantics}
 
@@ -682,6 +712,10 @@ FileSystem: The file system of the machine running \progname
 \end{itemize}
 
 \newpage
+
+\wss{Great MIS.  If we can find a way to capture the species information in a
+  type instead of a pseudo type, I think we will be getting closer to something
+  that Drasil can use.}
 
 \bibliographystyle {plainnat}
 \bibliography {../../../ReferenceMaterial/References}
