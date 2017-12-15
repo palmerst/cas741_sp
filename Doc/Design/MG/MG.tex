@@ -154,8 +154,6 @@ change.
   transformed into speciation data.
 \item[\refstepcounter{acnum} \actheacnum \label{acIC}:] How the input is converted
   to a form usable by the non-linear solver.
-\item[\refstepcounter{acnum} \actheacnum \label{acDG}:] How the speciation diagram
-  is generated from the output data.
 \item[\refstepcounter{acnum} \actheacnum \label{acNLS}:] The non-linear solver
   algorithm.
 \item[\refstepcounter{acnum} \actheacnum \label{acP}:] The plotting algorithm.
@@ -186,11 +184,10 @@ actually be implemented.
 \item [\refstepcounter{mnum} \mthemnum \label{mHH}:] Hardware-Hiding
 \item [\refstepcounter{mnum} \mthemnum \label{mEI}:] External Interface
 \item [\refstepcounter{mnum} \mthemnum \label{mCS}:] Chemical System
-\item [\refstepcounter{mnum} \mthemnum \label{mEP}:] Equation
 \item [\refstepcounter{mnum} \mthemnum \label{mSP}:] Species
-\item [\refstepcounter{mnum} \mthemnum \label{mC}:] Calculation
+\item [\refstepcounter{mnum} \mthemnum \label{mEP}:] Reaction
 \item [\refstepcounter{mnum} \mthemnum \label{mIC}:] Input Conversion
-\item [\refstepcounter{mnum} \mthemnum \label{mDG}:] Diagram Generation
+\item [\refstepcounter{mnum} \mthemnum \label{mC}:] Calculation
 \item [\refstepcounter{mnum} \mthemnum \label{mNLS}:] Non-linear Solver
 \item [\refstepcounter{mnum} \mthemnum \label{mP}:] Plotting
 \end{description}
@@ -208,11 +205,10 @@ actually be implemented.
 
 \multirow{7}{0.3\textwidth}{Behaviour-Hiding Module} & External Interface\\
 & Chemical System\\
-& Species Parser\\
-& Equation Parser\\
+& Species\\
+& Reaction\\
 & Input Conversion\\
 & Calculation\\
-& Diagram Generation\\ 
 \midrule
 
 \multirow{2}{0.3\textwidth}{Software Decision} & Non-linear Solver\\
@@ -335,14 +331,6 @@ chemical species.
   to judge once your MIS is done.  Great initial design.  I like the external
   interface idea.}
 
-\subsubsection{Diagram Generation (\mref{mDG})}
-
-\begin{description}
-\item[Secrets:]How the speciation diagram is generated from the speciation data.
-\item[Services:]Generates a speciation diagram from speciation data.
-\item[Implemented By:] \progname{}
-\end{description}
-
 
 
 \subsection{Software Decision}
@@ -392,7 +380,7 @@ R1 & \mref{mEI}, \mref{mCS}, \mref{mEP}, \mref{mSP}\\
 R2 & \mref{mCS}, \mref{mEP}, \mref{mSP}\\
 R3 & \mref{mCS}\\
 R4 & \mref{mEI}, \mref{mC}, \mref{mIC}, \mref{mNLS}\\
-R5 & \mref{mHH}, \mref{mEI}, \mref{mDG}, \mref{mP}\\
+R5 & \mref{mHH}, \mref{mEI}, \mref{mP}\\
 \bottomrule
 \end{tabular}
 \caption{Trace Between Requirements and Modules}
@@ -412,7 +400,6 @@ R5 & \mref{mHH}, \mref{mEI}, \mref{mDG}, \mref{mP}\\
 \acref{acIE} & \mref{mEP}\\
 \acref{acC} & \mref{mC}\\
 \acref{acIC} & \mref{mIC}\\
-\acref{acDG} & \mref{mDG}\\
 \acref{acNLS} & \mref{mNLS}\\
 \acref{acP} & \mref{mP}\\
 \bottomrule
