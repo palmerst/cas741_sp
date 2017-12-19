@@ -14,6 +14,53 @@
 \usepackage{fullpage}
 \usepackage{scrextend}
 \usepackage{amsmath}
+\usepackage{graphicx}
+\graphicspath{ {image/} }
+
+%%%%  lines 19-61 from https://tex.stackexchange.com/questions/83882/how-to-highlight-python-syntax-in-latex-listings-lstinputlistings-command
+%\usepackage[utf8]{inputenc}
+
+% Default fixed font does not support bold face
+\DeclareFixedFont{\ttb}{T1}{txtt}{bx}{n}{12} % for bold
+\DeclareFixedFont{\ttm}{T1}{txtt}{m}{n}{12}  % for normal
+
+% Custom colors
+\usepackage{color}
+\definecolor{deepblue}{rgb}{0,0,0.5}
+\definecolor{deepred}{rgb}{0.6,0,0}
+\definecolor{deepgreen}{rgb}{0,0.5,0}
+
+\usepackage{listings}
+
+% Python style for highlighting
+\newcommand\pythonstyle{\lstset{
+language=Python,
+basicstyle=\ttm,
+otherkeywords={self},             % Add keywords here
+keywordstyle=\small\ttb\color{deepblue},
+emph={MyClass,__init__},          % Custom highlighting
+emphstyle=\small\ttb\color{deepred},    % Custom highlighting style
+stringstyle=\small\color{deepgreen},
+frame=,                         % Any extra options here
+showstringspaces=false            % 
+}}
+
+
+% Python environment
+\lstnewenvironment{python}[1][]
+{
+\pythonstyle
+\lstset{#1}
+}
+{}
+
+% Python for external files
+\newcommand\pythonexternal[2][]{{
+\pythonstyle
+\lstinputlisting[#1]{#2}}}
+
+% Python for inline
+\newcommand\pythoninline[1]{{\pythonstyle\lstinline!#1!}}
 
 \newcommand{\progname}{SpecGen}
 
@@ -47,6 +94,7 @@
 \midrule
 10.13.2017 & S. Palmer & First revision of document\\
 10.25.2017 & S. Palmer & Revision 0 submission\\
+12.18.2017 & S. Palmer & Revision 1\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -83,7 +131,10 @@
 
 This document provides a detailed description of the testing that will be 
 carried out on the Aqueous Speciation Diagram Generator program (herein referred 
-to as \progname{}).  
+to as \progname{}).  Complementary documents include the 
+System Requirement Specifications, Module Guide and Module Interface Specification.  
+The full documentation and 
+implementation can be found \href{https://github.com/palmerst/cas741_sp}{here}.
 
 \subsection{Purpose}
 The purpose of this document is to provide a comprehensive plan for testing the 
@@ -95,7 +146,8 @@ The test plan is narrowed to the following scope:
 \begin{itemize}
 \item The tests outlined in this document are limited to the verification of the 
   requirements given in the \progname{} SRS.  The validation of the requirements 
-  will be carried out via correspondance with Dr.\ Scott Smith.
+  will be carried out via correspondence with Dr.\ Scott Smith 
+  (Wilfrid Laurier University).
   \wss{Add information on Dr.\ Smith's affiliation}
 \item The tests outlined in this document are limited to dynamic tests only.  
   Due to the small size and low complexity of the \progname{} program, no formal
@@ -129,7 +181,7 @@ The test team includes the following members:
 
 \subsection{Automated Testing Approach}
 The automated testing for \progname{} will be carried out using a set of unit 
-and integrations tests.  A test coverage analysis of these tests will be 
+and integration tests.  A test coverage analysis of these tests will be 
 carried out to ensure that testing is as complete as possible.  The target 
 for this analysis is 100\% statement coverage. 
 
@@ -143,7 +195,7 @@ integration testing, will not be considered.
 The following tools will be used to facilitate testing:
 
 \begin{enumerate}
-\item {\bf PyUnit} (a unit testing framework for Python) will be used to write 
+\item {\bf PyTest} (a unit testing framework for Python) will be used to write 
   and run unit tests
 \item {\bf Coverage.py} will be used to assess test coverage
 \item {\bf make} will be used to automate the building and execution of the test 
@@ -156,253 +208,130 @@ The following tools will be used to facilitate testing:
 N/A
 
 \section{System Test Description}
-\spc{Intial states, inputs, outputs will be formalized/revised as implementation 
-  proceeds.}	
+
 \subsection{Tests for Functional Requirements}
 
-\subsubsection{Input Testing}
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG_I}: Equation 
-Parser, Integration}\\
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DiagFe}: Diagram generator of FeOH$_3$ system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with general chemical reaction\\
-\spc{TODO: change this to the actual input file text with implementation}
-\wss{I know you cannot give the file at this point, since this
-  document was written before the implementation, but more information
-  would be nice.  What is the sample equation you are going to parse?
-  Couldn't you write it here in symbolic form?  Could you write
-  something like what you wrote for T3?}
+\item[Initial State:] ~\newline
 
-\item[Output:] Data structure with input reaction equation components\\
-\spc{TODO: change this to the actual output structure when implemented}
+\begin{python}
+feSys = ChemSys()
+feSys.registerRxn(
+  "(Fe)3+ + (H2O)l = (Fe(OH))2+ + (H)+ , -2.19"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 2(H2O)l = (Fe(OH)2)+ + 2(H)+ , -5.67"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 4(H2O)l = (Fe(OH)4)- + 4(H)+ , -21.6"
+)
+feSys.registerTotal(
+  "Fe", 0.000010
+)
+\end{python}
 					
-\item[How test will be performed:] Automated integration test \\
-\end{description}
-\end{addmargin}	
+\item[Input:] ~\newline
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_IDS_I}: Input 
-Data Structure, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file\\
-\spc{TODO: change this to the actual input file text with implementation}
+\begin{python}
+feSys.specGen("fe")
+\end{python}
 
-\item[Output:] Input parameters stored by the program match the input file\\
-\spc{TODO: change this to the actual output structure when implemented}
 					
-\item[How test will be performed:] Automated integration test\\
-\end{description}
-\end{addmargin}		
+\item[Output:] ~\newline
 
+\includegraphics[width=0.7\textwidth]{fe_syst}
 
-\subsubsection{Derived Input Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL_I}: Species 
-List from Equation, Distinct Species in Equation}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with reaction:\\
-H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$\\
-\spc{TODO: change this to 
-  the actual input file text with implementation}
-					
-\item[Output:] List of species [H$_2$O, H$^+$, OH$^-$, H$_2$CO$_3$$_\text{(aq)}$, HCO$_3^-$]
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
 \end{addmargin}
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL_R_I}: Species 
-List from Equations, Repeated Species in Equations}\\
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DiagCO2}: Diagram generation of CO$_2$ system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
 \item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with reactions:\\
-H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$\\
-HCO$_3^-$ $\rightleftharpoons$ H$^+$ + CO$_3^{2-}$\\
-\spc{TODO: change this to 
-  the actual input file text with implementation}
-					
-\item[Output:] List of species [H$_2$O, H$^+$, OH$^-$, H$_2$CO$_3$$_\text{(aq)}$, HCO$_3^-$, CO$_3^{2-}$]
-					
-\item[How test will be performed:] Automated integration test\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
+\item[Initial State:] ~\newline
 
-\subsubsection{Input Constraint Testing}
+\begin{python}
+co2Sys = ChemSys()
+co2Sys.registerRxn(
+  "(CO2)aq + (H2O)l = (H2CO3)aq , -2.77"
+)
+co2Sys.registerRxn(
+  "(H2CO3)aq = (HCO3)- + (H)+ , -3.6"
+)
+co2Sys.registerRxn(
+  "(HCO3)- = (CO3)2- + (H)+ , -10.33"
+)
+co2Sys.registerTotal(
+  "C", 0.000010
+)
+\end{python}
+					
+\item[Input:] ~\newline
 
-\wss{Although it might be hard to maintain without something like
-  Drasil, it would be nice to see a pointer to the Table in the SRS
-  where the input constraints are listed.}
+\begin{python}
+feSys.specGen("co2")
+\end{python}
 
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Neg_I}: Element 
-Total Concentration, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Integration
 					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with Fe$_{\text{tot}}$ = -1.0\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] Error
+\item[Output:] ~\newline
+
+\includegraphics[width=0.7\textwidth]{co2_syst}
 					
 \item[How test will be performed:] Automated integration test\\
 \end{description}
 \end{addmargin}
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Zero_I}: Element 
-Total Concentration, Zero, Integration}\\
+
+\newpage
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Comp}: Comparison of 
+generated speciation diagram to original}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Integration
+\item[Type:] Functional, Manual
 					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with Fe$_{\text{tot}}$ = 0.0\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] Error
-					
-\item[How test will be performed:] Automated integration test\\
+\item[How test will be performed:] This test will compare the diagram generated 
+by \progname{} for the FeOH$_3$ system with the diagram generated by Dr. Smith's
+MATLAB implementation.  The diagram will be generated in \progname{} by the following
+inputs:
+
+\begin{python}
+feSys = ChemSys()
+feSys.registerRxn(
+  "(Fe)3+ + (H2O)l = (Fe(OH))2+ + (H)+ , -2.19"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 2(H2O)l = (Fe(OH)2)+ + 2(H)+ , -5.67"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 4(H2O)l = (Fe(OH)4)- + 4(H)+ , -21.6"
+)
+feSys.registerTotal(
+  "Fe", 0.000010
+)
+feSys.specGen("fe")
+\end{python}
+
+The diagram should be the same as the following:
+
+\includegraphics[width=0.7\textwidth]{orig_ref}\\
 \end{description}
 \end{addmargin}
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_EC_Pos_I}: Element 
-Total Concentration, Positive, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with Fe$_{\text{tot}}$ = 1.0\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] Fe$_{\text{tot}}$ = 1.0
-					
-\item[How test will be performed:] Automated integration test\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
-
-
-
-\subsubsection{Calculation Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver_Parallel_I}: 
-Non-Linear Equation System Solution, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Parallel, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with same data as the MATLAB implementation\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] Solution that matches the MATLAB implementation\\
-\spc{TODO: get data from MATLAB implementation}
-					
-\item[How test will be performed:] Automated integration test\\
-\end{description}
-\end{addmargin}
-
-\wss{You could easily be more specific here.  What input file for
-  Matlab?  Probably the data from Dr.\ Smith's original problem
-  description.}
-
-\wss{You will not get exact agreement with the output of the Matlab
-  implementation.  You should explain that the output will include a
-  summary statistic for the relative difference between the two
-  solutions.  My initial thought would be a separate statistic for
-  each species ($\mathbf{x}$), something like 
-$$\frac{|| \mathbf{x}_{\text{Mat}} -
-  \mathbf{x}_{\text{\progname{}}}||} {||\mathbf{x}_{\text{Mat}}||}$$
-where the vertical bars represent a vector norm, like the Euclidean
-norm, or the infinity norm.
-}
-\wss{This comment about not getting exact agreement with the expected
-  output applies elsewhere in the document as well.}
-
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver_I}: 
-Non-Linear Equation System Solution, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with redundant equation:\\
-Fe$^{3+}$ $\rightleftharpoons$ Fe$^{3+}$, K = 1.0\\
-Fe$_{\text{tot}}$ = 0.1\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] [Fe$^{3+}$] = 0.1 M at all pH
-					
-\item[How test will be performed:] Automated integration test\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
-
-\subsubsection{Output Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Out_SpecGen_I}: 
-Speciation Diagram, Integration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Manual, Integration
-					
-\item[Initial State:] N/A
-					
-\item[Input:] Input file with:\\
-CO$_2$$_\text{(aq)}$ + H$_2$O $\rightleftharpoons$ H$_2$CO$_3$$_\text{(aq)}$, 
-  K = $1.7\times10^{−3}$\\
-H$_2$CO$_3$$_\text{(aq)}$ $\rightleftharpoons$ H$^+$ + HCO$_3^-$, 
-  K = $2.5\times10^{−4}$\\
-HCO$_3^-$ $\rightleftharpoons$ H$^+$ + CO$_3^{2-}$, K = $4.69\times10^{−11}$\\
-C$_{\text{tot}}$ = 0.1\\
-\spc{TODO: change this to the actual input file text with implementation}
-					
-\item[Output:] Correct carbonate speciation diagram\\
-\spc{TODO: should I link to diagram here?}
-					
-\item[How test will be performed:] The generated speciation diagram will be 
-manually reviewed to ensure that it matches the diagram expected by the input 
-specifications.\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
 
 
 \subsection{Tests for Nonfunctional Requirements}
 
-\subsubsection{Output Readability Testing}
 		
-\noindent {\bf }
-\begin{addmargin}[2em]{0em}
 \noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_NF_Read}: Readability of 
 generated speciation diagram}\\
 \begin{addmargin}[2em]{0em}
@@ -411,15 +340,15 @@ generated speciation diagram}\\
 					
 \item[How test will be performed:] This is a qualitative test to ensure that the 
 diagrams generated by \progname{} are readable (axis labels visible, curves 
-distinguishable from eachother, \wss{proof read} legend/labelling of curves, etc.).\\
+distinguishable from each other, \wss{proof read} legend/labelling of curves, etc.).\\
 \end{description}
 \end{addmargin}
 
-\end{addmargin}
 
 \wss{It wouldn't be bad to add an acceptance test where you explicitly
   plan to ask Dr.\ Smith to review the program.  This would implicitly
   capture functional and nonfunctional requirements, to some extent.}
+\spc{I didn't get around to this one :-( }
 
 \section{Traceability Between System Tests and Requirements}
 A trace between system tests and requirements is provided in 
@@ -431,193 +360,593 @@ A trace between system tests and requirements is provided in
 \begin{tabularx}{0.55\textwidth}{p{4cm}X}
 \toprule {\bf Requirement} & {\bf Test(s)}\\
 \midrule
-R1	&	\testref{T_In_EPG_I}, \testref{T_In_IDS_I}\\
-R2	&	\testref{T_DIn_SL_I}, \testref{T_DIn_SL_R_I}\\
-R3	&	\testref{T_CIn_EC_Neg_I}, \testref{T_CIn_EC_Zero_I}, \testref{T_CIn_EC_Pos_I}\\
-R4	&	\testref{T_Calc_Solver_Parallel_I}, \testref{T_Calc_Solver_I}\\
-R5	&	\testref{T_Out_SpecGen_I}\\
-NF1 & \testref{T_NF_Read}~\spc{TODO: add NF1 to SRS}\\
+R1	&	\testref{T_DiagFe}, \testref{T_DiagCO2}, \testref{T_Comp}\\
+R2	&	\testref{T_DiagFe}, \testref{T_DiagCO2}, \testref{T_Comp}\\
+R3	&	\testref{T_DiagFe}, \testref{T_DiagCO2}, \testref{T_Comp}\\
+R4	&	\testref{T_DiagFe}, \testref{T_DiagCO2}, \testref{T_Comp}\\
+R5	&	\testref{T_DiagFe}, \testref{T_DiagCO2}, \testref{T_Comp}\\
+NF1 & \testref{T_NF_Read}\\
 \bottomrule
 \end{tabularx}
 \end{table}
 
 \newpage		
 \section{Unit Testing Plan}
-\spc{Just a rough idea of unit tests -- will update with implementation.}
-		
-\subsection{Input Module Testing}
+%% NEW
 
+%%%%%%%%%%% PLOTTING MODULE TESTING %%%%%%%%%%%
+\subsection{Plotting Module Testing}
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPG}: Equation 
-  Parser, General}\\
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Plot}: Plotting Test}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Unit
+\item[Type:] Automatic, Unit
 					
-\item[Initial State:] ?
+\item[Initial State:] N/A
 					
-\item[Input:] String representation of chemical reaction
-					
-\item[Output:] Data structure of reaction equation components
-					
-\item[How test will be performed:] Automated unit test \\
-\end{description}
-\end{addmargin}			
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_EPE1}: Equation 
-  Parser, Edge Case 1}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] String representation of chemical equation that hits edges cases 
-  (want full coverage)
-					
-\item[Output:] Data structure of reaction equation components
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-\noindent \spc{Edge cases will be added during implementation (after data 
-structures and exact format of input is decided).  For simplicity going forward, 
-edge cases are ignored (since at this point I don't know the number/nature of 
-the edge cases).  They will be added as the implementation is developed.}\\
+\item[Input:] ~\newline
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_In_IDS}: Input Data 
-Structure}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
+\begin{python}
+genDiagram( "test_plot", 
+            range(0, 11), 
+            "x", 
+            [range(0, 11)], 
+            "y", 
+            ["y1"] )
+\end{python}
 					
-\item[Initial State:] ?
-					
-\item[Input:] Input data (?)
-					
-\item[Output:] Data structure works -- probably several tests
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
+\item[Output:] ~\newline
 
-
-\subsection{Derived Input Module Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_DIn_SL}: Species 
-List from Equation}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] String representation of chemical reaction
-					
-\item[Output:] List of species contained in reaction
-					
-\item[How test will be performed:] Automated unit test\\
-\end{description}
-\end{addmargin}
-\end{addmargin}
-
-\subsection{Input Constraints Module Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECNeg}: 
-Negative Element Total Concentration}\\
-\begin{addmargin}[2em]{0em}
-\begin{description}
-\item[Type:] Functional, Automatic, Unit
-					
-\item[Initial State:] ?
-					
-\item[Input:] Negative concentration
-					
-\item[Output:] Error
+\includegraphics[width=0.7\textwidth]{test_plot_ref}
 					
 \item[How test will be performed:] Automated unit test\\
 \end{description}
 \end{addmargin}
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECZero}: Zero 
-Element Total Concentration}\\
+\end{addmargin}
+
+
+%%%%%%%%%%% INPUT CONVERSION MODULE TESTING %%%%%%%%%%%
+\subsection{Input Conversion Module Testing}
+\begin{addmargin}[2em]{0em}
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_ConvFe}: Input conversion of FeOH$_3$ system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Unit
+\item[Type:] Automatic, Unit
 					
-\item[Initial State:] ?
+\item[Initial State:] ~\newline
+
+\begin{python}
+feSys = ChemSys()
+feSys.registerRxn(
+  "(Fe)3+ + (H2O)l = (Fe(OH))2+ + (H)+ , -2.19"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 2(H2O)l = (Fe(OH)2)+ + 2(H)+ , -5.67"
+)
+feSys.registerRxn(
+  "(Fe)3+ + 4(H2O)l = (Fe(OH)4)- + 4(H)+ , -21.6"
+)
+feSys.registerTotal(
+  "Fe", 0.000010
+)
+(fn, _) = makeRootFunc(feSys)
+
+def expectedFe(p, *arg):
+  (h, oh) = arg
+  (x1, x2, x3, x4) = p
+  return ( x2 + h - x1 + 2.19, 
+           x3 + 2*h - x1 + 5.67,
+           x4 + 4*h - x1 + 21.6,
+           log10(10**x1 + 10**x2 + 10**x3 + 10**x4) 
+             - log10(0.000010) )
+\end{python}
 					
-\item[Input:] Zero concentration
+\item[Input:] ~\newline
+
+\begin{python}
+fn((a, b, c, d), e, f)
+\end{python}
+
+For $a$, $b$, $c$, $d$, $e$, $f$ in range -14 to 0.
 					
-\item[Output:] Error
+\item[Output:] ~\newline
+
+\begin{python}
+expectedFe((a, b, c, d), e, f)
+\end{python}
+
+For same values of $a$, $b$, $c$, $d$, $e$, $f$.
 					
 \item[How test will be performed:] Automated unit test\\
 \end{description}
 \end{addmargin}
 
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CIn_ECPos}: 
-Positive Element Total Concentration}\\
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_ConvCO2}: Input conversion of CO$_2$ system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Unit
+\item[Type:] Automatic, Unit
 					
-\item[Initial State:] ?
+\item[Initial State:] ~\newline
+
+\begin{python}
+co2Sys = ChemSys()
+co2Sys.registerRxn(
+  "(CO2)aq + (H2O)l = (H2CO3)aq , -2.77"
+)
+co2Sys.registerRxn(
+  "(H2CO3)aq = (HCO3)- + (H)+ , -3.6"
+)
+co2Sys.registerRxn(
+  "(HCO3)- = (CO3)2- + (H)+ , -10.33"
+)
+co2Sys.registerTotal(
+  "C", 0.000010
+)
+(fn, _) = makeRootFunc(co2Sys)
+
+def expectedCO2(p, *arg):
+  (h, oh) = arg
+  (x1, x2, x3, x4) = p
+  return ( x2 - x1 + 2.77, 
+           x3 + h - x2 + 3.6,
+           x4 + h - x3 + 10.33,
+           log10(10**x1 + 10**x2 + 10**x3 + 10**x4) 
+             - log10(0.000010) )
+\end{python}
 					
-\item[Input:] Positive concentration
+\item[Input:] ~\newline
+
+\begin{python}
+fn((a, b, c, d), e, f)
+\end{python}
+
+For $a$, $b$, $c$, $d$, $e$, $f$ in range -14 to 0.
 					
-\item[Output:] Positive concentration
+\item[Output:] ~\newline
+
+\begin{python}
+expectedCO2((a, b, c, d), e, f)
+\end{python}
+
+For same values of $a$, $b$, $c$, $d$, $e$, $f$.
 					
 \item[How test will be performed:] Automated unit test\\
 \end{description}
 \end{addmargin}
+
+
+%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_ConvExc}: Input conversion of empty system}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+emptySys = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+makeRootFunc(emptySys) 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
 \end{addmargin}
 
-\subsubsection{Conversion Module Testing}
-\spc{\progname{} will convert inputs into a set of non-linear equations to be 
-solved by a non-linear solver.  This will involve some sort of module/code to 
-be tested here.}
+\end{addmargin}
 
+%%%%%%%%%%% CALCULATION MODULE TESTING %%%%%%%%%%%
 \subsection{Calculation Module Testing}
 \begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Calc_Solver}: 
-Non-Linear Equation System Solution}\\
+
+%%%%
+
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CalcExc}: Calculation of empty system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Automatic, Unit
+\item[Type:] Automatic, Unit
 					
-\item[Initial State:] ?
+\item[Initial State:] ~\newline
+
+\begin{python}
+emptySys = ChemSys()
+\end{python}
 					
-\item[Input:] System of non-linear equations
+\item[Input:] ~\newline
+
+\begin{python}
+calcSpec(emptySys) 
+\end{python}
 					
-\item[Output:] Solution that satisfies original system of equations
+\item[Output:] Runtime Error
 					
 \item[How test will be performed:] Automated unit test\\
 \end{description}
 \end{addmargin}
-\end{addmargin}
 
-\subsection{Output Module Testing}
-
-\begin{addmargin}[2em]{0em}
-\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_Out_SpecGen}: 
-Speciation Diagram}\\
+%%%%
+\newpage
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_CalcLine}: Calculation of simple system}\\
 \begin{addmargin}[2em]{0em}
 \begin{description}
-\item[Type:] Functional, Manual, Unit
+\item[Type:] Automatic, Unit
 					
-\item[Initial State:] ?
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+cs.registerRxn("(T)aq = (H)+ , 0")
+\end{python}
 					
-\item[Input:] Output specifications
+\item[Input:] ~\newline
+
+\begin{python}
+(_, out, _) = calcSpec(cs)
+out
+\end{python}
 					
-\item[Output:] Speciation diagram
-					
-\item[How test will be performed:] The generated speciation diagram will be 
-manually reviewed to ensure that it matches the specified output.\\
+\item[Output:] ~\newline
+
+\begin{python}
+[[10**(-x/100) for x in range(0, 1401)]]	
+\end{python}
+				
+\item[How test will be performed:] Automated unit test\\
 \end{description}
 \end{addmargin}
+
 \end{addmargin}
+
+%%%%%%%%%%% CALCULATION MODULE TESTING %%%%%%%%%%%
+\subsection{Chemical System Module Testing}
+\begin{addmargin}[2em]{0em}
+
+%%%%
+
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad1}: Register reaction as empty string}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("") 
+\end{python}
+					
+\item[Output:] Value Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+\newpage
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad2}: Register reaction without equilibrium constant}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("(H)+") 
+\end{python}
+					
+\item[Output:] Value Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad3}: Register reaction without products}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("(H)+ , 0") 
+\end{python}
+					
+\item[Output:] Value Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad4}: Register reaction with bad state}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+\newpage					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("(H)bad = (H)bad , 0") 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad5}: Register reaction with bad formula (non-letter symbol)}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("(H)bad = (H)bad , 0") 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad6}: Register reaction with bad formula (beginning with lower case)}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("(h)+ = (h)+ , 0") 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+\newpage
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad7}: Register reaction with bad formula (no parentheses)}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("H+ = H+ , 0") 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysBad8}: Register reaction with bad formula (unbalanced parentheses)}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("((H)+ = (H)+ , 0") 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysParen1}: Register reaction with superfluous parentheses}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+\newpage					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("((H))+ = (H)+ , 0") 
+\end{python}
+					
+\item[Output:] No Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_SysParen2}: Register reaction with high parenthesis nesting}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerRxn("((H(OH)2(H)))l = (H)+ , 0") 
+\end{python}
+					
+\item[Output:] No Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_TotNeg}: Register negative element total}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerTotal("H", -1) 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+\newpage
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_TotZero}: Register zero element total}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerTotal("H", 0) 
+\end{python}
+					
+\item[Output:] Runtime Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\noindent {\bf T\refstepcounter{testnum}\thetestnum \label{T_TotPos}: Register positive element total}\\
+\begin{addmargin}[2em]{0em}
+\begin{description}
+\item[Type:] Automatic, Unit
+					
+\item[Initial State:] ~\newline
+
+\begin{python}
+cs = ChemSys()
+\end{python}
+					
+\item[Input:] ~\newline
+
+\begin{python}
+cs.registerTotal("H", 1) 
+\end{python}
+					
+\item[Output:] No Error
+					
+\item[How test will be performed:] Automated unit test\\
+\end{description}
+\end{addmargin}
+
+%%%%
+
+\end{addmargin}
+
+%%% END NEW
 
 \newpage
 \section{Traceability Between Unit Tests and Modules}
@@ -627,10 +956,22 @@ A trace between unit tests and modules is provided in
 \begin{table}[h]
 \caption{Module Traceability} \label{tab:modtrace}
 \centering
-\begin{tabularx}{0.55\textwidth}{p{4cm}X}
+\begin{tabularx}{0.90\textwidth}{lX}
 \toprule {\bf Module} & {\bf Test(s)}\\
 \midrule
-\spc{TODO:  fill in once implementation is done}&\\
+M1 & implemented by OS; no tests required\\
+M2 & external interface; no explicit testing; covered implicitly\\
+M3 & \testref{T_SysBad1}, \testref{T_SysBad2}, \testref{T_SysBad3}, 
+\testref{T_SysBad4}, \testref{T_SysBad5}, \testref{T_SysBad6}, 
+\testref{T_SysBad7}, \testref{T_SysBad8}, \testref{T_SysParen1},
+\testref{T_SysParen2}, \testref{T_TotNeg}, \testref{T_TotZero},
+\testref{T_TotPos} \\
+M4 & data structure; no explicit testing; covered implicitly\\
+M5 & data structure; no explicit testing; covered implicitly\\
+M6 & \testref{T_ConvFe}, \testref{T_ConvCO2}, \testref{T_ConvExc}\\
+M7 & \testref{T_CalcExc}, \testref{T_CalcLine}\\
+M8 & implemented by Python; no tests required\\
+M9 & \testref{T_Plot}\\
 \bottomrule
 \end{tabularx}
 \end{table}
