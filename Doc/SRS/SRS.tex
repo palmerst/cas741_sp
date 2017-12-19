@@ -43,6 +43,7 @@
 
 \input{../Comments}
 
+
 \newcommand{\sskip}{\vskip 1mm}
 
 % For easy change of table widths
@@ -81,6 +82,9 @@
 \newcounter{reqnum} %Requirement Number
 \newcommand{\rthereqnum}{P\thereqnum}
 \newcommand{\rref}[1]{R\ref{#1}}
+\newcounter{nfreqnum} %NF Requirement Number
+\newcommand{\rthenfreqnum}{P\thenfreqnum}
+\newcommand{\nfref}[1]{NF\ref{#1}}
 \newcounter{lcnum} %Likely change number
 \newcommand{\lthelcnum}{LC\thelcnum}
 \newcommand{\lcref}[1]{LC\ref{#1}}
@@ -114,6 +118,7 @@
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 10.5.2017 & S. Palmer & First revision of document\\
+12.18.2017 & S. Palmer & Revision 1\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -123,6 +128,60 @@
 \section{Reference Material}
 
 This section records information for easy reference.
+
+\subsection{Notation}
+This section describes the notation conventions used in this document. 
+
+\subsubsection{Chemical Notation}
+The following notation is used to describe chemical reactions:\\
+
+${\alpha}_1 {A}_{1} + \cdots + {\alpha}_n {A}_{n} 
+    \rightleftharpoons {\beta}_1 {B}_{1} + \cdots + {\beta}_m {B}_{m}$\\
+
+where $A_i$ are reactant species, $\alpha_i$ are the stoichiometric numbers
+of the reactant species, $n$ is the number of reactant species, $B_i$ are product species,
+$\beta_i$ are the stoichiometric numbers of the product species, $m$ is the number of
+product species.\\
+
+\noindent
+Chemical species are denoted as follows:\\
+
+${{E}^1_{e1}}\cdots{{E}^n_{en}}^{z}_{(s)}$\\
+
+where $E^i$ are chemical elements, $e_i$ are the number of each element $E^i$ in
+the species, $n$ is the number of distinct elements in the species, $z$ is the
+charge, and $s$ is the state.  The state of a species ranges over the values
+aqueous (aq), solid (s), liquid (l), or gas (g).
+
+\subsubsection{Mathematical Notation}
+In addition to standard mathematical notation conventations, the Gries and Schneider 
+notations~\cite{GS1993} for 
+set building and the evaluation of
+operators applied over sets are use extensively in this document.  
+Specifically, the expression $\{x: X~|~R~\bigcdot~P\}$ means the set of all values $x$ 
+that are members of $X$ for which the range $R$ is true and the predicate $P$ is satisfied.  
+A set preceded by $\Sigma$ means the sum of all values in that set.
+
+\subsubsection{Spaces}
+All symbols that occur in this document have an associated space (a set which their values 
+belong to).  Standard mathematical spaces are used (e.g. $\mathbb{N}$, $\mathbb{Z}$, 
+$\mathbb{R}$, etc.) as well as some additional spaces defined in the following table. 
+~\newline
+
+\renewcommand{\arraystretch}{1.2}
+%\begin{table}[ht]
+  \noindent \begin{tabular}{l l} 
+    \toprule		
+    \textbf{symbol} & \textbf{description}\\
+    \midrule 
+    Sp. & chemical species \\
+    Rx. & chemical reaction \\
+    Elt. & chemical element \\
+    \bottomrule
+  \end{tabular}
+  %	\caption{Provide a caption}
+%\end{table}
+
 
 \subsection{Table of Units}
 
@@ -158,44 +217,75 @@ description of the unit and the SI name.
 The table that follows summarizes the symbols used in this document along with
 their units.  The choice of symbols was made to be consistent with chemistry 
 literature.  The symbols are listed in alphabetical order.
-
+~\newline
 \renewcommand{\arraystretch}{1.2}
 %\noindent \begin{tabularx}{1.0\textwidth}{l l X}
-\noindent \begin{longtable*}{l l p{12cm}} \toprule
-\textbf{symbol} & \textbf{unit} & \textbf{description}\\
+\noindent \begin{longtable*}{l l l p{8cm}} \toprule
+\textbf{symbol} & \textbf{space} & \textbf{unit} & \textbf{description}\\
 \midrule 
-$A$ & -- & reactant species in a chemical equation
+$\alpha$ & $\mathbb{N}$ & -- & stoichiometric coefficient of reactant species
 \\
-$B$ & -- & product species in a chemical equation
+$\beta$ & $\mathbb{N}$ & -- & stoichiometric coefficient of product species
+\\$A$ & Sp. & -- & reactant species in a chemical equation
+\\
+$B$ & Sp. & -- & product species in a chemical equation
 \\ 
-$K$ & -- & equilibrium constant
+$i$ & $\mathbb{N}$ & -- & index counter
 \\ 
-$R$ & -- & an arbitrary reversible reaction
+$j$ & $\mathbb{N}$ & -- & index counter
+\\
+$K$ & $\mathbb{R}$ & -- & equilibrium constant
+\\
+$K_{H_2O}$ & $\mathbb{R} \rightarrow \mathbb{R}$ & -- & equilibrium equation for the dissociation of water
+\\
+$\overline K$ & Set of $\mathbb{R}^n \rightarrow \mathbb{R}$ & -- & set of equilibria equations 
+\\
+$k_+$ & $\mathbb{R}$ & \si{\mole\per\second} & forward rate constant
+\\
+$k_-$ & $\mathbb{R}$ & \si{\mole\per\second} & backward rate constant
+\\
+$\overline M$ & Set of $\mathbb{R}^n \rightarrow \mathbb{R}$ & -- &  set of mass balance equations
 \\ 
-$\overline {RK}_{in}$ & -- & the input set of all pairs of reactions and 
+$m$ & $\mathbb{N}$ & -- & index counter
+\\ 
+$n$ & $\mathbb{N}$ & -- & index counter
+\\
+$P$ & $\mathbb{R}$ & \si{\bar} & pressure
+\\
+$R$ & Rx. & -- & an arbitrary reversible reaction
+\\ 
+$\overline {RK}_{in}$ & Set of (Rx., $\mathbb{R}$) & -- & the input set of all pairs of reactions and 
   associated equilibrium constants 
 \\ 
-$\overline S$ & -- & a set of aqueous solute species in a chemical system
+$r_+$ & $\mathbb{R}$ & \si{\mole\per\second} & forward reaction rate
+\\
+$r_-$ & $\mathbb{R}$ & \si{\mole\per\second} & backward reaction rate
+\\
+$\overline S$ & Set of Sp.  & -- & a set of aqueous solute species in a chemical system
 \\ 
-$\overline S_{in}$ & -- & the input set of all aqueous solute species in 
+$\overline S_{in}$ & Set of Sp. & -- & the input set of all aqueous solute species in 
   the chemical system
 \\ 
-$\overline T_{in}$ & -- & the input set of total concentrations of chemical 
+$T$ & $\mathbb{R}$ & $^{\circ}$C & temperature
+\\
+$\overline T_{in}$ & Set of $\mathbb{R}$ & -- & the input set of total concentrations of chemical 
   elements
 \\ 
-$X$ & -- & arbitrary chemical species
+$X$ & Sp. & -- & arbitrary chemical species
 \\
-$x$ & -- & arbitrary chemical element
+$x$ & Elt. & -- & arbitrary chemical element
 \\
-$x_{tot}$ & \si[per-mode=symbol] {\mole\per\litre} & total concentration of an 
+$x_{tot}$ & $\mathbb{R}$ & \si[per-mode=symbol] {\mole\per\litre} & total concentration of an 
   arbitrary chemical element $x$
 \\
-$[X]$ & \si[per-mode=symbol] {\mole\per\litre} & concentration of the arbitrary 
+$[X]$ & $\mathbb{R}$ & \si[per-mode=symbol] {\mole\per\litre} & concentration of the arbitrary 
   chemical species $X$
 \\
-$\{X\}$ & -- & activity of the arbitrary chemical species $X$
+$\{X\}$ & $\mathbb{R}$ & -- & activity of the arbitrary chemical species $X$
 \\
-$z_{X}$ & -- & charge number of an arbitrary aqueous solute $X$
+$z_{X}$ & $\mathbb{Z}$ & -- & charge number of an arbitrary aqueous solute $X$
+\\
+$\#x\langle X\rangle$ & $\mathbb{N}$ & -- & the number of occurrences of $x$ in $X$
 \\
 \bottomrule
 \end{longtable*}
@@ -214,6 +304,7 @@ $z_{X}$ & -- & charge number of an arbitrary aqueous solute $X$
   GS & Goal Statement\\
   IM & Instance Model\\
   LC & Likely Change\\
+  NF & Non-Functional Requirement\\
   PS & Physical System Description\\
   R & Requirement\\
   SATP & Standard Ambient Temperature and Pressure\\
@@ -239,7 +330,9 @@ $z_{X}$ & -- & charge number of an arbitrary aqueous solute $X$
 The purpose of this document is to describe the requirements for the Aqueous 
 Speciation Diagram Generator program (herein referred to as \progname), a 
 software product that will produce a speciation diagram given a set of chemical 
-reactions and element totals that define a chemical system as inputs.  The goals 
+reactions and element totals that define a chemical system as inputs.  \progname{}
+is reimplementation of a MATLAB implementation by~\cite{smith2007} 
+(Wilfrid Laurier University) using a rational design process.  The goals 
 and theoretical models used in the SpecGen code are provided, with an emphasis 
 on explicitly identifying assumptions and unambiguous definitions. This document 
 is intended to be used as a reference to provide all information necessary to 
@@ -257,10 +350,10 @@ implementation. Although the SRS fits in a series of documents that follow the
 so-called waterfall model, the actual development process is not constrained in
 any way. Even when the waterfall model is not followed, as
 \cite{ParnasAndClements1986} point out, the most logical way to present the
-documentation is still to ``fake'' \wssf{Use ``fake'' to get correct quotation
+documentation is still to ``fake'' \wss{Use ``fake'' to get correct quotation
   marks} a rational design process.
 
-\wssf{The text is better for version control, and for reading in other editors,
+\wss{The text is better for version control, and for reading in other editors,
   if you use a hard-wrap at 80 characters}
 
 \subsection{Scope of Requirements} 
@@ -275,9 +368,11 @@ build the theory models?  Assumptions that are subsequently used to build the
 instance model would then be outside of the scope of scope.  We can test this
 idea by applying it to our examples and seeing which assumptions would be
 classified as scope assumptions.}
-The scope of the requirements includes collecting all input parameters that
-describe a chemical system. Given the appropriate inputs, the code for SpecGen
-is intended to use the data to produce a speciation diagram in the pH range 0 to
+The scope of \progname{} is limited to the generation of speciation diagrams
+for aqueous chemical systems.  Analysis of gas and solid phases will not be
+considered.  The chemical systems under investigation are always assumed to be
+at Standard Ambient Temperature and Pressure (SATP).  Diagrams generated by 
+\progname{} will plot aqueous species concentrations over the pH range 0 to
 14.  \wss{Did you define pH anywhere?  I know it is basic knowledge (acidic
   knowledge? :-) ), but I think it would add to the document.}
 
@@ -368,7 +463,8 @@ easier to correctly understand the requirements:
   system
 \item[Equilibrium:] the state of a chemical system in which species 
   concentrations are stable
-\item[SATP:] standard ambient temperature pressure
+\item[pH:] Potential of Hydrogen:  pH $= -\log{\{H^+\}}$
+\item[SATP:] Standard Ambient Temperature and Pressure
   $(T = 25^{\circ}\textrm{C}, ~P = 1~\textrm{bar})$ \wss{When you define an
     acronym, in the expanded form you should capitalize the letters that are
     being used.} \wss{$P$ is not in your list of symbols.}
@@ -393,12 +489,9 @@ the species set (excluding O and H), the goal statements are:
 
 \begin{itemize}
 
-\item[GS\refstepcounter{goalnum}\thegoalnum \label{G_solve}:] Calculate the 
-  equilibrium concentrations of all chemical species present in the system over 
-  the pH range 0 to 14.
 \item[GS\refstepcounter{goalnum}\thegoalnum \label{G_plot}:] Generate a plot of 
   the equilibrium concentrations of all chemical species present in the system 
-  versus pH.
+  versus pH over the pH range 0 to 14.
 \end{itemize}
 
 \wss{The more I think about it, the more I think you really only have one goal -
@@ -452,44 +545,6 @@ This section focuses on the general equations and laws that \progname{} is based
 on.
 
 ~\newline
-
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\tabulinesep=1.5mm
-\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
-  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_RREQ}\\
-  \hline
-  Label&\bf Equational representation of reversible chemical reactions \wss{This
-    feels more like a notation than a theoretical model.  Maybe it is just the
-    heading?  If the theory were instead labelled Reversible Chemical Reactions,
-    it would seem like a theory to me.}\\
-  \hline
-  Equation&  ${\alpha}_1 {A}_{1} + \cdots + {\alpha}_n {A}_{n} 
-    \rightleftharpoons {\beta}_1 {B}_{1} + \cdots + {\beta}_m {B}_{m}$\\
-  \hline
-  Description & 
-                The above equation represents a reversible chemical reaction 
-                  where:\\
-              & $n$ is the number of reactants\\
-              & $m$ is the number of products\\
-              & $A_i$ is the $i^{\textrm{th}}$ reactant species\\
-              & $\alpha_i$ is the stoichiometric coefficient of the 
-                  $i^{\textrm{th}}$ reactant\\
-              & $B_j$ is the $j^{\textrm{th}}$ product species\\
-              & $\beta_j$ is the stoichiometric coefficient of the 
-                  $j^{\textrm{th}}$ product\\
-  \hline
-  Source &~\cite{wiki:rr}\\
-  \hline
-  Ref.\ By & \tref{T_LMAF}, \tref{T_LMAB}\\
-  \hline
-\end{tabu}
-\end{minipage}\\
-~\newline
-~\newline
 \noindent
 \begin{minipage}{\textwidth}
 \renewcommand*{\arraystretch}{1.5}
@@ -533,37 +588,6 @@ $*$ operators ...}
   \hline
 \end{tabu}
 \end{minipage}\\
-~\newline
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\tabulinesep=1.5mm
-\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
-  \hline
-  \rowcolor[gray]{0.9}
-  Number& T\refstepcounter{theorynum}\thetheorynum \label{T_CB}\\
-  \hline
-  Label&\bf Charge neutrality of aqueous solutions\\
-  \hline
-  Equation&  $\sum\{X : \overline S ~\bigcdot~ z_{X} \cdot [X]\} = 0$\\
-  \hline
-  Description & 
-                Aqueous solutions must be electrically neutral, and thus the 
-                  concentration of positive charge from dissolved solutes must 
-                  balance with the concentration of negative charge from 
-                  dissolved solutes.  This is reflected in the equation above, 
-                  where:\\
-              & $X$ is an aqueous species in solution\\
-              & $\overline S$ is a set of all aqueous species a solution\\
-              & $z_{X}$ is the charge number of $X$\\
-              & $[X]$ is the concentration of $X$\\
-  \hline
-  Source &--\\
-  \hline
-  Ref.\ By & \ddref{DD_C}\\
-  \hline
-\end{tabu}
-\end{minipage}\\
 
 ~\newline
 \noindent
@@ -581,9 +605,8 @@ $*$ operators ...}
   \hline
   Description &
                 The law of mass action describes the forward and backward 
-                  reaction rates for a chemical reaction.  For a chemical 
-                  reaction expressed in the equational form given in 
-                  \tref{T_RREQ}, the equation above expresses the law of mass 
+                  reaction rates for a chemical reaction.  For a given
+                  chemical reaction, the equation above expresses the law of mass 
                   action in the forward direction, where:\\
               & $r_+$ is the forward reaction rate (\si{\mole\per\second}).\\
               & $k_+$ is the forward rate constant (\si{\mole\per\second}).\\
@@ -616,9 +639,8 @@ $*$ operators ...}
   \hline
   Description &
                 The law of mass action describes the forward and backward 
-                  reaction rates for a chemical reaction.  For a chemical 
-                  reaction expressed in the equational form given in 
-                  \tref{T_RREQ}, the equation above expresses the law of mass 
+                  reaction rates for a chemical reaction.  For a given
+                  chemical reaction, the equation above expresses the law of mass 
                   action in the backward direction, where:\\
               & $r_-$ is the backward reaction rate (\si{\mole\per\second}).\\
               & $k_-$ is the backward rate constant (\si{\mole\per\second}).\\
@@ -764,8 +786,6 @@ data definitions, which in turn are used to build the instance models.
 This section collects and defines all the data needed to build the instance
 models. The dimension of each quantity is also given.
 
-\spc{Note: The definitions here need rethinking -- not clear enough as they are.  
-  Reminder:  type system.}
 
 ~\newline
 
@@ -796,10 +816,6 @@ Symbol &$\overline K$\\
     set of equilibria via \tref{T_K}. The equilibrium equation for the 
     dissociation of water (\dref{GD_water}) is added to this set since it is not 
     supplied by the user.\\
-  & \spc{The ``equation'' needs revision to state this more clearly -- doesn't 
-    look like a set of equations. I'm leaving out the description of variables 
-    for now as it is going to change anyway.}
-  \\
   \hline
   Sources&--  \\
   \hline
@@ -834,10 +850,6 @@ Symbol &$\overline M$\\
   Description & Instantiation of \tref{T_MB} using the input sets $\overline 
     T_{in}$ and $\overline S_{in}$ yields a set of mass (concentration) balance 
     equations.\\
-  & \spc{The ``equation'' needs revision to state this more clearly -- doesn't 
-    look like a set of equations. I'm leaving out the description of variables 
-    for now as it is going to change anyway.}
-  \\
   \hline
   Sources&--  \\
   \hline
@@ -846,39 +858,6 @@ Symbol &$\overline M$\\
 \end{tabu}
 \end{minipage}\\
 
-~\newline
-
-\noindent
-\begin{minipage}{\textwidth}
-\renewcommand*{\arraystretch}{1.5}
-\tabulinesep=1.5mm
-\begin{tabu}{| p{\colAwidth} | p{\colBwidth}|}
-\hline
-\rowcolor[gray]{0.9}
-Number& DD\refstepcounter{datadefnum}\thedatadefnum \label{DD_C}\\
-\hline
-Label& \bf Charge balance equation\\
-\hline
-Symbol &$C$\\
-\hline
-% Units& $Mt^{-3}$\\
-% \hline
-  SI Units & --\\
-  \hline
-  Equation&$C:~ \sum\{X : \overline S_{in} ~\bigcdot~ z_{X} \cdot [X]\} = 0$\\
-  \hline
-  Description & Instantiation of \tref{T_CB} using the input set $\overline 
-    S_{in}$ yields the charge balance equation.\\
-  &\spc{As with the previous DD's, the ``equation'' needs revision to state this 
-    more clearly.}
-  \\
-  \hline
-  Sources& --  \\
-  \hline
-  Ref.\ By & \iref{IM_solve}\\
-  \hline
-\end{tabu}
-\end{minipage}\\
 
 \subsubsection{Instance Models} \label{sec_instance}    
 
@@ -887,7 +866,8 @@ one which is expressed in mathematical terms. It uses concrete symbols defined
 in \sref{sec_datadef} to replace the abstract symbols in the models 
 identified in \sref{sec_theoretical} and \sref{sec_gendef}.
 
-The goal \gsref{G_solve} is solved by \iref{IM_solve}.
+The goal \gsref{G_plot} is accomplished by plotting the results of
+ \iref{IM_solve}.
 
 ~\newline
 
@@ -904,19 +884,19 @@ The goal \gsref{G_solve} is solved by \iref{IM_solve}.
   \hline
   Label& \bf System of non-linear equations to find equilibrium concentrations\\
   \hline
-  Input&$\overline K$, $\overline M$, $C$\\
+  Input&$\overline K$, $\overline M$\\
   \hline
   Output& $\{X:\overline S_{in} ~|~ X \neq OH^- \land X \neq H^+ ~\bigcdot~ 
             \{[X]~\textrm{for}~0 \leq pH \leq 14\} \}$,\\
-        & when the system of non-linear equations $\overline K \cup \overline M 
-          \cup C$ is satisfied\\
+        & when the system of non-linear equations $\overline K \cup \overline M$
+         is satisfied\\
   \hline
   Description & 
-                The union of $\overline K$ (\ddref{DD_setK}), $\overline M$ 
-                  (\ddref{DD_setM}), and $C$ (\ddref{DD_C}) makes up the system 
+                The union of $\overline K$ (\ddref{DD_setK}) and $\overline M$ 
+                  (\ddref{DD_setM}) makes up the system 
                   of non-linear equations that must be solved.  By 
                   \aref{A_only_aq}, all activities in the system of equations 
-                  $\overline K \cup \overline M \cup C$ are either that of water 
+                  $\overline K \cup \overline M$ are either that of water 
                   or that of an aqueous solute species.  By \aref{A_act_wat}, 
                   all instances of $\{H_2O\}$ can be replaced with 1.0.  By 
                   \aref{A_act_aq}, all activities of aqueous solute species can 
@@ -951,12 +931,12 @@ input if one were performing an uncertainty quantification exercise.
 The specification parameters in Table~\ref{TblInputVar} are listed in
 Table~\ref{TblSpecParams}.
 
-\spc{There is a line break between table captions and tables and I can't figure 
-  out why.  It's really bothering me.  Will fix later. :-(}
+
 \begin{table}[!h]
+  \centering
   \caption{Input Variables} \label{TblInputVar}
   \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l l l c} 
+\noindent \begin{tabular}{l l l l c} 
   \toprule
   \textbf{Input} & \textbf{Physical Constraints} & \textbf{Software Constraints}  
                    & \textbf{Typical Value} & \textbf{Uncertainty}\\
@@ -974,26 +954,28 @@ Table~\ref{TblSpecParams}.
     $\overline {RK}_{in}$.}\\
   \multicolumn{5}{l}{\scriptsize **** The set of $x_{tot}$ is 
     $\overline {T}_{in}$.}
-\end{longtable*}
+\end{tabular}
 \end{table}
 
 
 \begin{table}[!h]
+\centering
 \caption{Specification Parameter Values} \label{TblSpecParams}
 \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l l} 
+\noindent \begin{tabular}{l l} 
   \toprule
   \textbf{Var} & \textbf{Value} \\
   \midrule 
   $x_{{tot}_{\text{min}}}$ & 0 \si{\mole\per\litre}\\
   \bottomrule
-\end{longtable*}
+\end{tabular}
 \end{table}
 
 \begin{table}[!h]
+\centering
 \caption{Output Variables} \label{TblOutputVar}
 \renewcommand{\arraystretch}{1.2}
-\noindent \begin{longtable*}{l c} 
+\noindent \begin{tabular}{l c} 
   \toprule
   \textbf{Output} & \textbf{Physical Constraints} \\
   \midrule 
@@ -1001,7 +983,7 @@ Table~\ref{TblSpecParams}.
     \{[X]~\textrm{for}~0 \leq pH \leq 14\} \}$ & $[X] \geq 0$
   \\
   \bottomrule
-\end{longtable*}
+\end{tabular}
 \end{table}
 
 \subsubsection{Properties of a Correct Solution} \label{sec_CorrectSolution}
@@ -1024,14 +1006,14 @@ The goal \gsref{G_plot} is solved by \rref{R_Output}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_Inputs}:] \progname{} will 
   take the following inputs:
-  \begin{enumerate} \item ${RK}_{in}$: the set of all pairs of reactions and 
+  \begin{enumerate} \item $\overline{RK}_{in}$: the set of all pairs of reactions and 
                       associated equilibrium constants 
-                    \item $T_{in}$: the set of total concentrations of chemical 
+                    \item $\overline{T}_{in}$: the set of total concentrations of chemical 
                       elements
   \end{enumerate}
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_DerivedInputs}:] \progname{} 
-  will derive $S_{in}$ (the set of all aqueous solute species in the chemical 
+  will derive $\overline{S}_{in}$ (the set of all aqueous solute species in the chemical 
   system) from the set of reactions in \rref{R_Inputs}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_ValidateInputs}:] \progname{} 
@@ -1039,11 +1021,11 @@ The goal \gsref{G_plot} is solved by \rref{R_Output}.
   \sref{sec_DataConstraints}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_Calculate}:] \progname{} will 
-  calculate equilibrium concentrations for all species in $S_{in}$ (excluding 
+  calculate equilibrium concentrations for all species in $\overline{S}_{in}$ (excluding 
   $H^+$ and $OH^-$) via \iref{IM_solve}.
 
 \item[R\refstepcounter{reqnum}\thereqnum \label{R_Output}:] \progname{} will 
-  generate a speciation diagram of all species in $S_{in}$ (excluding $H^+$ and 
+  generate a speciation diagram of all species in $\overline{S}_{in}$ (excluding $H^+$ and 
   $OH^-$) in the pH range 0 to 14 using the results of the calculation in 
   \rref{R_Calculate}.
 
@@ -1051,13 +1033,17 @@ The goal \gsref{G_plot} is solved by \rref{R_Output}.
 
 
 \subsection{Nonfunctional Requirements}
-\spc{Using Drasil boilerplate here. Is this sufficient or should it be more 
-  precise?}
+
 \progname{} is small in size and relatively simple, so performance is not a 
 priority. Any reasonable implementation will be very quick and use minimal 
 storage. Rather than performance, the non-functional requirement priorities 
 are correctness, understandability, reusability, maintainability, and 
 portability. 
+
+\begin{itemize}
+\item[NF\refstepcounter{nfreqnum}\thenfreqnum \label{NF_Diag}:] \progname{} will
+  generate diagrams with readable titles, axis labels, legends, and plot lines.
+\end{itemize}
 
 \section{Likely Changes}    
 
@@ -1096,9 +1082,7 @@ the assumptions.
 	& \aref{A_pH}& \aref{A_SATP}& \aref{A_only_aq}& \aref{A_act_wat}& 
       \aref{A_act_aq}& \aref{A_rev}\\
 \hline
-\tref{T_RREQ}     & & & & & & \\ \hline
 \tref{T_MB}       & & & & & & \\ \hline
-\tref{T_CB}       & & & & & & \\ \hline
 \tref{T_LMAF}     & & & & & & \\ \hline
 \tref{T_LMAB}     & & & & & & \\ \hline
 \tref{T_EQ}       & & & & & & \\ \hline
@@ -1106,7 +1090,6 @@ the assumptions.
 \dref{GD_water}   & &X& & & & \\ \hline
 \ddref{DD_setK}   & & & & & &X\\ \hline
 \ddref{DD_setM}   & & & & & & \\ \hline
-\ddref{DD_C}      & & & & & & \\ \hline
 \iref{IM_solve}   &X& &X&X&X& \\ \hline
 \lcref{LC_SATP}   & &X& & & & \\ \hline
 \lcref{LC_state}  & & &X& & & \\ \hline
@@ -1123,22 +1106,19 @@ the assumptions.
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline        
-	& \tref{T_RREQ}& \tref{T_MB}& \tref{T_CB}& \tref{T_LMAF}& \tref{T_LMAB} & 
+	& \tref{T_MB}& \tref{T_LMAF}& \tref{T_LMAB} & 
       \tref{T_EQ}& \tref{T_K} & \dref{GD_water}& \ddref{DD_setK}& 
-      \ddref{DD_setM}& \ddref{DD_C}& \iref{IM_solve} \\
+      \ddref{DD_setM}& \iref{IM_solve} \\
 \hline
-\tref{T_RREQ}    & & & & & & & & & & & & \\ \hline
-\tref{T_MB}      & & & & & & & & & & & & \\ \hline
-\tref{T_CB}      & & & & & & & & & & & & \\ \hline
-\tref{T_LMAF}    &X& & & & & & & & & & & \\ \hline
-\tref{T_LMAB}    &X& & & & & & & & & & & \\ \hline
-\tref{T_EQ}      & & & &X&X& & & & & & & \\ \hline
-\tref{T_K}       & & & & & &X& & & & & & \\ \hline
-\dref{GD_water}  & & & & & & &X& & & & & \\ \hline
-\ddref{DD_setK}  & & & & & & &X&X& & & & \\ \hline
-\ddref{DD_setM}  & &X& & & & & & & & & & \\ \hline
-\ddref{DD_C}     & & &X& & & & & & & & & \\ \hline
-\iref{IM_solve}  & & & & & & & & &X&X&X& \\
+\tref{T_MB}      & & & & & & & & & \\ \hline
+\tref{T_LMAF}    & & & & & & & & & \\ \hline
+\tref{T_LMAB}    & & & & & & & & & \\ \hline
+\tref{T_EQ}      & &X&X& & & & & & \\ \hline
+\tref{T_K}       & & & &X& & & & & \\ \hline
+\dref{GD_water}  & & & & &X& & & & \\ \hline
+\ddref{DD_setK}  & & & & &X&X& & & \\ \hline
+\ddref{DD_setM}  &X& & & & & & & & \\ \hline
+\iref{IM_solve}  & & & & & & &X&X& \\
 \hline
 \end{tabular}
 \caption{Traceability Matrix Showing the Connections Between TM, GD, DD, IM}
