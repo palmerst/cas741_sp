@@ -1,9 +1,9 @@
 import re
 
-from Species import *
-from ChemEq import *
-from Calculations import *
-from Plot import *
+from SpecGen.Species import *
+from SpecGen.ChemEq import *
+from SpecGen.Calculations import *
+from SpecGen.Plot import *
 
 class ChemSys:
   
@@ -25,7 +25,7 @@ class ChemSys:
    
   def registerTotal(self, elt, tot):
     if tot <= 0:
-      raise SystemExit("Element total concentration must be greater than 0.")    
+      raise RuntimeError("Element total concentration must be greater than 0.")    
     self.totals[elt] = tot
     
     
@@ -63,9 +63,6 @@ class ChemSys:
   def __parseRxnSpecies(self, rsp):
     m = re.match('^([1-9]?|[1-9][0-9]*)(.*)$', rsp)    
     
-    if m is None:
-      raise SystemExit("Reaction species %s is ill-formed" % rsp)
-    
     num = m.group(1)
     if num == "":
       num = 1
@@ -101,7 +98,7 @@ class ChemSys:
     m = re.match('^\((.*)\)(?:(([1-9]?|[1-9][0-9]*)([\+-]))|([lgs]|aq))$', str)
     
     if m is None:
-      raise SystemExit("Species %s is ill-formed (state)" % str)
+      raise RuntimeError("Species %s is ill-formed (state)" % str)
     
     sp = m.group(1)
     
@@ -158,7 +155,7 @@ class ChemSys:
       
       ## report error if unbalanced parens, or nothing between parens
       if parens != 0 or l == 0:
-        raise SystemExit("Species %s is ill-formed (parentheses)" % str)
+        raise RuntimeError("Species %s is ill-formed (parentheses)" % str)
       
       ## take what is between parens          
       c = component[1:1 + l] 
@@ -174,7 +171,7 @@ class ChemSys:
       m = re.match('^([A-Z][a-z]?)([1-9][0-9]*)?(.*)$', component)
     
       if m is None:
-        raise SystemExit("Species %s is ill-formed (formula)" % str)
+        raise RuntimeError("Species %s is ill-formed (formula)" % str)
         
       (c, num, rest) = (m.group(1), m.group(2), m.group(3))
     

@@ -1,5 +1,5 @@
-from Convert import *
-from ChemSys import *
+from SpecGen.Convert import *
+from SpecGen.ChemSys import *
 
 from scipy.optimize import *
 

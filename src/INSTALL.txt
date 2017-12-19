@@ -1,0 +1,11 @@
+Running SpecGen:
+
+A sample program is included that produces speciation diagrams
+for the FeOH3 system, as well as the CO2 system.  To run this 
+program use 'make prog'.  This will produce 2 png files (one
+for each system).
+
+
+Running tests:
+
+The test suite can be run using 'make test'.

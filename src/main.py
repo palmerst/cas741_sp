@@ -1,4 +1,4 @@
-from ChemSys import *
+from SpecGen import *
 
 sys = ChemSys()
 sys.registerRxn("(Fe)3+ + (H2O)l = (Fe(OH))2+ + (H)+ , -2.19")
@@ -13,3 +13,4 @@ sys2.registerRxn("(H2CO3)aq = (HCO3)- + (H)+ , -3.6")
 sys2.registerRxn("(HCO3)- = (CO3)2- + (H)+ , -10.33")
 sys2.registerTotal("C", 0.000010)
 sys2.specGen("co2_syst")
+

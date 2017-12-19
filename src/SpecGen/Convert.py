@@ -3,9 +3,9 @@ from types import *
 from functools import reduce
 from math import log10
 
-from ChemSys import *
-from Species import *
-from ChemEq import *
+from SpecGen.ChemSys import *
+from SpecGen.Species import *
+from SpecGen.ChemEq import *
 
 def makeRootFunc(syst):  
   def toInput():
@@ -23,6 +23,9 @@ def makeRootFunc(syst):
   
   
   (vars , vlist) = toInput()
+  
+  if not vlist:
+    raise RuntimeError("Chemical system contains no free aqueous species.")  
 
   equil = [equilibrium(r, syst.species) for r in syst.rxns]
   
@@ -94,17 +97,3 @@ def massBalance(elt, tot, species):
   logTot = Call(func=Name(id='log10', ctx=Load()), args=[Num(tot)], keywords=[])
   
   return BinOp(logMassSum, Sub(), logTot)
-
-# def chargeBalance():
-  # def getTerm(spec):
-    # if spec.state != "aq":
-      # return Num(0)  # or None and filter?
-    # n = spec.charge
-    # if n == 0:
-      # return Num(0)
-    # term = Name("x" + str(spec.number), Load())
-    # return BinOp(Num(n), Mult(), term)
-  
-  # specs = species.values()
-  # chargeTerms = list(map(getTerm, specs))
-  # return reduce(lambda x, y: BinOp(x, Add(), y), chargeTerms, Num(0)) 
