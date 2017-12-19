@@ -1,3 +1,14 @@
+Required software:
+
+  - Python 3.6 (possible lower versions of 3.x -- I haven't tested)
+  - make
+  - the following Python packages:
+      scipy:       pip install scipy
+      matplotlib:  pip install matplotlib
+      pytest:      pip install pytest
+      coverage:    pip install pytest-cov
+
+      
 Running SpecGen:
 
 A sample program is included that produces speciation diagrams
