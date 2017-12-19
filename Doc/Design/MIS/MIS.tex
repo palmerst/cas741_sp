@@ -65,6 +65,7 @@ urlcolor=cyan          % color of external links
 \textbf{Date} & \textbf{Developer(s)} & \textbf{Change}\\
 \midrule
 11.29.2017 & S. Palmer & Revision 0 submission\\
+12.18.2017 & S. Palmer & Revision 1\\
 \bottomrule
 \end{tabularx}
 \end{table}
@@ -90,13 +91,12 @@ See \href{https://github.com/palmerst/cas741_sp/blob/master/Doc/SRS/SRS.pdf}{SRS
 \section{Introduction}
 
 The following document details the Module Interface Specifications for
-the Aqueous Speciation Diagram Generator program. \wss{I suggest combining these
+the Aqueous Speciation Diagram Generator program. Complementary documents include the 
+System Requirement Specifications and Module Guide.  The full documentation and 
+implementation can be found \href{https://github.com/palmerst/cas741_sp}{here}.
+\wss{I suggest combining these
   two paragraphs into one paragraph.  Usually 1 sentence paragraphs aren't a
-  great idea, and the ideas in the two paragraphs are related.}
-
-Complementary documents include the System Requirement Specifications
-and Module Guide.  The full documentation and implementation can be
-found \href{https://github.com/palmerst/cas741_sp}{here}. 
+  great idea, and the ideas in the two paragraphs are related.} 
 
 \section{Notation}
 
@@ -158,7 +158,10 @@ ${{E}^1_{e1}}\cdots{{E}^n_{en}}^{z}_{(s)}$\\
 
 where $E^i$ are chemical elements, $e_i$ are the number of each element $E^i$ in
 the species, $n$ is the number of distinct elements in the species, $z$ is the
-charge, and $s$ is the state.\\ \wss{What are the possible values of state?  It
+charge, and $s$ is the state. The state of a species ranges over the set of values
+\{ aqueous (aq), solid (s), liquid (l), gas (g) \}.\\ 
+
+\wss{What are the possible values of state?  It
   seems like state would be a type with 2 or 3 values.  I don't know if you
   cover a gaseous state, but I'm assuming that s could represent solid or
   liquid.  What is the notation for one versions the other?  I see from reading
